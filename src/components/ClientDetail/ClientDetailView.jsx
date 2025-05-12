@@ -4,7 +4,6 @@ import { api } from '../../services/api';
 import { useClients } from '../../context/ClientsContext';
 import ClientHeader from './ClientHeader';
 import ClientActions from './ClientActions';
-import ScreenshotViewer from './ScreenshotViewer';
 import SystemInfo from './SystemInfo';
 import ActionsList from './ActionsList';
 
@@ -12,14 +11,14 @@ import ActionsList from './ActionsList';
  * Component for detailed client view page
  */
 const ClientDetailView = () => {
-  const { refreshClient, rebootClient } = useClients();
+  const { restartClient, shutdownClient } = useClients();
   const { id } = useParams();
   const navigate = useNavigate();
   const [client, setClient] = useState(null);
   const [actions, setActions] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
-  const [rebooting, setRebooting] = useState(false);
+  const [restarting, setRestarting] = useState(false);
+  const [shuttingDown, setShuttingDown] = useState(false);
 
   useEffect(() => {
     const fetchClientData = async () => {
@@ -43,43 +42,39 @@ const ClientDetailView = () => {
     fetchClientData();
   }, [id]);
 
-  const handleRefreshScreenshot = async () => {
+  const handleRestart = async () => {
     if (!client) return;
     
     try {
-      setRefreshing(true);
-      await refreshClient(client.id);
+      setRestarting(true);
+      await restartClient(client.id);
       const updatedClient = await api.getClient(client.id);
       if (updatedClient) {
         setClient(updatedClient);
       }
     } catch (error) {
-      console.error('Error refreshing screenshot:', error);
+      console.error('Error restarting client:', error);
     } finally {
-      setRefreshing(false);
+      setRestarting(false);
     }
   };
 
-  const handleReboot = async () => {
+  const handleShutdown = async () => {
     if (!client) return;
     
     try {
-      setRebooting(true);
-      await rebootClient(client.id);
-      // For demo purposes, simulate the client going offline briefly
+      setShuttingDown(true);
+      await shutdownClient(client.id);
+      // Set the client offline
       setClient(prev => prev ? { ...prev, isOnline: false } : null);
       
-      // Then simulate it coming back online after a delay
-      setTimeout(async () => {
-        const updatedClient = await api.getClient(client.id);
-        if (updatedClient) {
-          setClient(updatedClient);
-        }
-        setRebooting(false);
-      }, 5000);
+      // No automatic return to online state - client stays offline until manually turned on
+      setTimeout(() => {
+        setShuttingDown(false);
+      }, 2000);
     } catch (error) {
-      console.error('Error rebooting client:', error);
-      setRebooting(false);
+      console.error('Error shutting down client:', error);
+      setShuttingDown(false);
     }
   };
 
@@ -115,23 +110,16 @@ const ClientDetailView = () => {
         <ClientHeader client={client} onBack={handleBack} />
         <ClientActions 
           isOnline={client.isOnline}
-          refreshing={refreshing}
-          rebooting={rebooting}
-          onRefresh={handleRefreshScreenshot}
-          onReboot={handleReboot}
+          restarting={restarting}
+          shuttingDown={shuttingDown}
+          onRestart={handleRestart}
+          onShutdown={handleShutdown}
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <ScreenshotViewer 
-          screenshot={client.screenshot}
-          isOnline={client.isOnline}
-          lastUpdated={client.lastSeen}
-        />
-        <div className="space-y-6">
-          <SystemInfo client={client} />
-          <ActionsList actions={actions} />
-        </div>
+      <div className="space-y-6">
+        <SystemInfo client={client} />
+        <ActionsList actions={actions} />
       </div>
     </div>
   );

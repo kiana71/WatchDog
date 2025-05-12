@@ -7,7 +7,6 @@ export const mockClients = [
     ipAddress: '192.168.1.101',
     isOnline: true,
     lastSeen: new Date().toISOString(),
-    screenshot: 'https://images.pexels.com/photos/6633920/pexels-photo-6633920.jpeg',
     version: '1.2.0',
     uptimeHours: 8.5,
   },
@@ -18,7 +17,6 @@ export const mockClients = [
     ipAddress: '192.168.1.102',
     isOnline: true,
     lastSeen: new Date().toISOString(),
-    screenshot: 'https://images.pexels.com/photos/7181166/pexels-photo-7181166.jpeg',
     version: '1.2.0',
     uptimeHours: 5.3,
   },
@@ -29,7 +27,6 @@ export const mockClients = [
     ipAddress: '192.168.1.103',
     isOnline: false,
     lastSeen: new Date(Date.now() - 3600000 * 2).toISOString(), // 2 hours ago
-    screenshot: 'https://images.pexels.com/photos/8117889/pexels-photo-8117889.jpeg',
     version: '1.1.5',
     uptimeHours: 0,
   },
@@ -40,7 +37,6 @@ export const mockClients = [
     ipAddress: '192.168.1.104',
     isOnline: true,
     lastSeen: new Date().toISOString(),
-    screenshot: 'https://images.pexels.com/photos/7256899/pexels-photo-7256899.jpeg',
     version: '1.2.0',
     uptimeHours: 12.7,
   },
@@ -51,7 +47,6 @@ export const mockClients = [
     ipAddress: '192.168.1.105',
     isOnline: true,
     lastSeen: new Date(Date.now() - 60000 * 3).toISOString(), // 3 minutes ago
-    screenshot: 'https://images.pexels.com/photos/8117886/pexels-photo-8117886.jpeg',
     version: '1.2.0',
     uptimeHours: 3.1,
   },
@@ -74,13 +69,5 @@ export const mockActions = [
     status: 'failed',
     timestamp: new Date(Date.now() - 3600000).toISOString(), // 1 hour ago
     result: 'Connection timeout',
-  },
-  {
-    id: '3',
-    clientId: '2',
-    type: 'screenshot',
-    status: 'completed',
-    timestamp: new Date(Date.now() - 1800000).toISOString(), // 30 minutes ago
-    result: 'Success',
   },
 ];

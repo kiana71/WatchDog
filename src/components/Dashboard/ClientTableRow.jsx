@@ -7,10 +7,10 @@ import { RefreshCw, Power } from 'lucide-react';
  * @param {Object} props - Component props
  * @param {Object} props.client - Client data
  * @param {function} props.onClick - Function to call when row is clicked
- * @param {function} props.onRefresh - Function to call when refresh button is clicked
- * @param {function} props.onReboot - Function to call when reboot button is clicked
+ * @param {function} props.onRestart - Function to call when restart button is clicked
+ * @param {function} props.onShutdown - Function to call when shutdown button is clicked
  */
-const ClientTableRow = ({ client, onClick, onRefresh, onReboot }) => {
+const ClientTableRow = ({ client, onClick, onRestart, onShutdown }) => {
   return (
     <tr 
       onClick={() => onClick(client.id)}
@@ -43,7 +43,7 @@ const ClientTableRow = ({ client, onClick, onRefresh, onReboot }) => {
         <button
           onClick={(e) => {
             e.stopPropagation();
-            onRefresh(client.id);
+            onRestart(client.id);
           }}
           className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300"
         >
@@ -52,7 +52,7 @@ const ClientTableRow = ({ client, onClick, onRefresh, onReboot }) => {
         <button
           onClick={(e) => {
             e.stopPropagation();
-            onReboot(client.id);
+            onShutdown(client.id);
           }}
           className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300"
           disabled={!client.isOnline}

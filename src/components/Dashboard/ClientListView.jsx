@@ -5,14 +5,14 @@ import ClientTableRow from './ClientTableRow';
  * Component to display the client list as a table
  * @param {Object} props - Component props
  * @param {Array} props.clients - List of clients to display
- * @param {function} props.onRefresh - Function to handle refresh button click
- * @param {function} props.onReboot - Function to handle reboot button click
+ * @param {function} props.onRestart - Function to handle restart button click
+ * @param {function} props.onShutdown - Function to handle shutdown button click
  * @param {function} props.onClientSelect - Function to handle client selection
  */
 const ClientListView = ({
   clients = [],
-  onRefresh,
-  onReboot,
+  onRestart,
+  onShutdown,
   onClientSelect,
 }) => {
   return (
@@ -46,8 +46,8 @@ const ClientListView = ({
               key={client.id}
               client={client}
               onClick={onClientSelect}
-              onRefresh={onRefresh}
-              onReboot={onReboot}
+              onRestart={onRestart}
+              onShutdown={onShutdown}
             />
           ))}
         </tbody>

@@ -5,8 +5,8 @@ import { api } from '../services/api';
 const ClientsContext = createContext({
   clients: [],
   loading: false,
-  refreshClient: () => {},
-  rebootClient: () => {}
+  restartClient: () => {},
+  shutdownClient: () => {}
 });
 
 // Custom hook for using the context
@@ -39,21 +39,18 @@ export const ClientsProvider = ({ children }) => {
     return () => clearInterval(interval);
   }, []);
 
-  const refreshClient = async (id) => {
+  const restartClient = async (id) => {
     try {
-      await api.requestScreenshot(id);
-      // Refresh the client data
-      const updatedClients = await api.getClients();
-      setClients(updatedClients);
-    } catch (error) {
-      console.error('Failed to refresh client:', error);
-    }
-  };
-
-  const rebootClient = async (id) => {
-    try {
-      await api.rebootClient(id);
-      // Simulate the client going offline temporarily after reboot
+      // First, signal the client to restart
+      await api.restartClient(id);
+      
+      // Use updateClient to set the client offline with updated lastSeen
+      await api.updateClient(id, { 
+        isOnline: false, 
+        lastSeen: new Date().toISOString() 
+      });
+      
+      // Update local state to reflect the change immediately
       setClients(prev => 
         prev.map(client => 
           client.id === id 
@@ -61,18 +58,57 @@ export const ClientsProvider = ({ children }) => {
             : client
         )
       );
+      
       // Simulate the client coming back online after a delay
       setTimeout(async () => {
-        const updatedClients = await api.getClients();
-        setClients(updatedClients);
+        // Use updateClient to set the client back online
+        await api.updateClient(id, { isOnline: true });
+        
+        // Get the updated client data
+        const updatedClient = await api.getClient(id);
+        
+        // Update only this client in the state
+        if (updatedClient) {
+          setClients(prev => 
+            prev.map(client => 
+              client.id === id ? updatedClient : client
+            )
+          );
+        }
       }, 5000);
     } catch (error) {
-      console.error('Failed to reboot client:', error);
+      console.error('Failed to restart client:', error);
+    }
+  };
+
+  const shutdownClient = async (id) => {
+    try {
+      // Send shutdown command to the client
+      await api.shutdownClient(id);
+      
+      // Use updateClient to set the client offline permanently with updated lastSeen
+      await api.updateClient(id, { 
+        isOnline: false, 
+        lastSeen: new Date().toISOString() 
+      });
+      
+      // Update local state to reflect the change immediately
+      setClients(prev => 
+        prev.map(client => 
+          client.id === id 
+            ? { ...client, isOnline: false, lastSeen: new Date().toISOString() }
+            : client
+        )
+      );
+      
+      // No automatic return to online state - stays offline until user turns it back on
+    } catch (error) {
+      console.error('Failed to shut down client:', error);
     }
   };
 
   return (
-    <ClientsContext.Provider value={{ clients, loading, refreshClient, rebootClient }}>
+    <ClientsContext.Provider value={{ clients, loading, restartClient, shutdownClient }}>
       {children}
     </ClientsContext.Provider>
   );

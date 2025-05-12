@@ -1,13 +1,10 @@
 import WebSocket from 'ws';
-import screenshot from 'screenshot-desktop';
 import os from 'os';
 import { exec } from 'child_process';
 import osUtils from 'node-os-utils';
-import { promises as fs } from 'fs';
 import path from 'path';
 
 const SERVER_URL = 'ws://your-server-url:8080';
-const SCREENSHOT_INTERVAL = 60000; // 1 minute
 const HEARTBEAT_INTERVAL = 30000; // 30 seconds
 
 class WatchdogClient {
@@ -17,7 +14,6 @@ class WatchdogClient {
     this.version = '1.0.0';
     this.isConnected = false;
     this.reconnectAttempts = 0;
-    this.screenshotPath = path.join(os.tmpdir(), 'watchdog-screenshot.png');
   }
 
   getIPAddress() {
@@ -98,29 +94,14 @@ class WatchdogClient {
 
   async handleCommand(message) {
     switch (message.type) {
-      case 'take_screenshot':
-        await this.takeScreenshot();
-        break;
       case 'reboot':
         await this.rebootSystem();
         break;
+      case 'shutdown':
+        await this.shutdownSystem();
+        break;
       default:
         console.log('Unknown command:', message.type);
-    }
-  }
-
-  async takeScreenshot() {
-    try {
-      await screenshot({ filename: this.screenshotPath });
-      const imageBuffer = await fs.readFile(this.screenshotPath);
-      const base64Image = imageBuffer.toString('base64');
-      
-      this.send({
-        type: 'screenshot',
-        data: base64Image
-      });
-    } catch (error) {
-      console.error('Screenshot error:', error);
     }
   }
 
@@ -130,6 +111,16 @@ class WatchdogClient {
       if (error) {
         console.error('Reboot error:', error);
         this.send({ type: 'reboot_failed', error: error.message });
+      }
+    });
+  }
+
+  async shutdownSystem() {
+    this.send({ type: 'shutdown_initiated' });
+    exec('shutdown /s /t 5', (error) => {
+      if (error) {
+        console.error('Shutdown error:', error);
+        this.send({ type: 'shutdown_failed', error: error.message });
       }
     });
   }

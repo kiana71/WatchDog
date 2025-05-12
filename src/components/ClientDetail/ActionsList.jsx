@@ -24,7 +24,8 @@ const ActionsList = ({ actions = [] }) => {
                   <div className="flex space-x-2">
                     <span className="font-medium">
                       {action.type === 'reboot' && 'Reboot'}
-                      {action.type === 'screenshot' && 'Screenshot'}
+                      {action.type === 'restart' && 'Restart Computer'}
+                      {action.type === 'shutdown' && 'Shutdown'}
                       {action.type === 'update' && 'Update'}
                     </span>
                     <span className="text-gray-500">

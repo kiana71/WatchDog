@@ -1,7 +1,6 @@
 import React from 'react';
 import { api } from '../../services/api';
 import EditableField from '../common/EditableField';
-import ScreenshotViewer from './ScreenshotViewer';
 import SystemInfo from './SystemInfo';
 
 /**
@@ -43,11 +42,6 @@ const ClientQuickView = ({ client, onClientUpdated }) => {
           </h3>
         </div>
       </div>
-      <ScreenshotViewer
-        screenshot={client.screenshot}
-        isOnline={client.isOnline}
-        lastUpdated={client.lastSeen}
-      />
       <SystemInfo client={client} />
     </div>
   );

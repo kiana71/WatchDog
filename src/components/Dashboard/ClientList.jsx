@@ -10,7 +10,7 @@ import DownloadModal from './DownloadModal';
  * Main dashboard component displaying client list and stats
  */
 const ClientList = () => {
-  const { clients, loading, refreshClient, rebootClient } = useClients();
+  const { clients, loading, restartClient, shutdownClient } = useClients();
   const [selectedClientId, setSelectedClientId] = useState(null);
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
 
@@ -33,8 +33,8 @@ const ClientList = () => {
 
       <ClientListView
         clients={clients}
-        onRefresh={refreshClient}
-        onReboot={rebootClient}
+        onRestart={restartClient}
+        onShutdown={shutdownClient}
         onClientSelect={setSelectedClientId}
       />
 
@@ -42,7 +42,7 @@ const ClientList = () => {
         client={selectedClient}
         isOpen={!!selectedClientId}
         onClose={() => setSelectedClientId(null)}
-      />
+      /> 
 
       <DownloadModal
         isOpen={isDownloadModalOpen}

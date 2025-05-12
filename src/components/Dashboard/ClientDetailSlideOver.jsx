@@ -15,11 +15,11 @@ const ClientDetailSlideOver = ({
   isOpen,
   onClose,
 }) => {
-  const { refreshClient } = useClients();
+  const { restartClient } = useClients();
 
   const handleClientUpdated = async () => {
     if (client) {
-      await refreshClient(client.id);
+      await restartClient(client.id);
     }
   };
 
