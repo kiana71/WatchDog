@@ -32,6 +32,7 @@ const ClientList = () => {
       </div>
 
       <ClientListView
+
         clients={clients}
         onRestart={restartClient}
         onShutdown={shutdownClient}

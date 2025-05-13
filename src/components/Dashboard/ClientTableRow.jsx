@@ -1,6 +1,6 @@
 import React from 'react';
 import StatusBadge from '../common/StatusBadge';
-import { RefreshCw, Power } from 'lucide-react';
+import ClientActionButtons from './ClientActionButtons';
 
 /**
  * Component to display a single client row in the table
@@ -39,26 +39,13 @@ const ClientTableRow = ({ client, onClick, onRestart, onShutdown }) => {
           {new Date(client.lastSeen).toLocaleString()}
         </div>
       </td>
-      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-3">
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onRestart(client.id);
-          }}
-          className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300"
-        >
-          <RefreshCw size={16} />
-        </button>
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onShutdown(client.id);
-          }}
-          className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300"
-          disabled={!client.isOnline}
-        >
-          <Power size={16} />
-        </button>
+      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+        <ClientActionButtons
+          isOnline={client.isOnline}
+          clientId={client.id}
+          onRestart={onRestart}
+          onShutdown={onShutdown}
+        />
       </td>
     </tr>
   );

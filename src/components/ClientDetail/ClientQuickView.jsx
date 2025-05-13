@@ -42,7 +42,7 @@ const ClientQuickView = ({ client, onClientUpdated }) => {
           </h3>
         </div>
       </div>
-      <SystemInfo client={client} />
+      <SystemInfo client={client}/>
     </div>
   );
 };

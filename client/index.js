@@ -11,6 +11,8 @@ class WatchdogClient {
   constructor() {
     this.computerName = os.hostname();
     this.ipAddress = this.getIPAddress();
+    this.macAddress = this.getMacAddress();
+    this.osName = this.getOsInfo();
     this.version = '1.0.0';
     this.isConnected = false;
     this.reconnectAttempts = 0;
@@ -26,6 +28,62 @@ class WatchdogClient {
       }
     }
     return '127.0.0.1';
+  }
+
+  getMacAddress() {
+    const interfaces = os.networkInterfaces();
+    for (const iface of Object.values(interfaces)) {
+      for (const alias of iface) {
+        if (alias.family === 'IPv4' && !alias.internal) {
+          return alias.mac;
+        }
+      }
+    }
+    return '00:00:00:00:00:00';
+  }
+
+  getOsInfo() {
+    const platform = os.platform();
+    const release = os.release();
+    const type = os.type();
+    
+    // Format OS information based on platform
+    if (platform === 'win32') {
+      // Windows platform
+      const winVersion = {
+        '10.0': 'Windows 10/11',
+        '6.3': 'Windows 8.1',
+        '6.2': 'Windows 8',
+        '6.1': 'Windows 7',
+        '6.0': 'Windows Vista',
+        '5.2': 'Windows XP 64-Bit',
+        '5.1': 'Windows XP',
+      };
+      
+      const version = winVersion[release.split('.').slice(0, 2).join('.')] || `Windows (${release})`;
+      
+      // Try to get edition information using exec (in a real implementation)
+      // This is a simplified version
+      return version;
+    } else if (platform === 'darwin') {
+      // macOS platform
+      const macVersions = {
+        '22': 'macOS Ventura',
+        '21': 'macOS Monterey',
+        '20': 'macOS Big Sur',
+        '19': 'macOS Catalina',
+        '18': 'macOS Mojave',
+        '17': 'macOS High Sierra',
+      };
+      
+      const majorVersion = release.split('.')[0];
+      return macVersions[majorVersion] || `macOS (${release})`;
+    } else if (platform === 'linux') {
+      // Linux platform - would use more specific detection in production
+      return `${type} (${release})`;
+    } else {
+      return `${type} ${platform} (${release})`;
+    }
   }
 
   async connect() {
@@ -75,6 +133,8 @@ class WatchdogClient {
       data: {
         computerName: this.computerName,
         ipAddress: this.ipAddress,
+        macAddress: this.macAddress,
+        osName: this.osName,
         version: this.version,
         uptimeHours: os.uptime() / 3600,
         cpuUsage: await osUtils.cpu.usage(),

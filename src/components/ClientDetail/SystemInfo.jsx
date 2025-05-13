@@ -1,5 +1,5 @@
 import React from 'react';
-import { Monitor, Wifi, Tag, Clock } from 'lucide-react';
+import { Monitor, Wifi, Tag, Clock, Cpu, Server } from 'lucide-react';
 
 const SystemInfo = ({ client }) => {
   const formatUptime = (hours) => {
@@ -14,8 +14,8 @@ const SystemInfo = ({ client }) => {
   
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-5">
-      <h3 className="font-medium text-lg mb-4 flex items-center gap-2">
-        <Monitor className="text-blue-500" size={20} />
+      <h3 className="font-medium text-lg mb-4 flex items-center text-white gap-2">
+        <Monitor className="text-white" size={20} />
         System Information
       </h3>
       
@@ -34,6 +34,22 @@ const SystemInfo = ({ client }) => {
             <span className="font-medium">IP Address</span>
           </div>
           <div className="text-gray-900 dark:text-white">{client.ipAddress}</div>
+        </div>
+        
+        <div className="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-200 dark:border-gray-700">
+          <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+            <Server size={16} className="text-gray-500" />
+            <span className="font-medium">MAC Address</span>
+          </div>
+          <div className="text-gray-900 dark:text-white">{client.macAddress || 'Not available'}</div>
+        </div>
+        
+        <div className="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-200 dark:border-gray-700">
+          <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+            <Cpu size={16} className="text-gray-500" />
+            <span className="font-medium">OS</span>
+          </div>
+          <div className="text-gray-900 dark:text-white">{client.osName || 'Not available'}</div>
         </div>
         
         <div className="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-200 dark:border-gray-700">

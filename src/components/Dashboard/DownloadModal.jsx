@@ -149,37 +149,7 @@ const DownloadModal = ({ isOpen, onClose }) => {
                     </div>
                   </div>
 
-                  {/* macOS Installation */}
-                  <div className="bg-gray-50 dark:bg-gray-700/30 rounded-lg p-5">
-                    <div className="flex items-center gap-2 mb-4">
-                      <Apple className="text-gray-700 dark:text-gray-300" size={24} />
-                      <h3 className="text-xl font-medium">macOS Installation</h3>
-                    </div>
-                    <div className="flex flex-col md:flex-row gap-6">
-                      <button
-                        onClick={() => handleDownload('mac')}
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-gray-800 dark:bg-gray-600 text-white rounded-lg hover:bg-gray-700 dark:hover:bg-gray-500 transition-colors"
-                      >
-                        <Download size={16} />
-                        Download for macOS
-                      </button>
-                      <div className="text-gray-700 dark:text-gray-300">
-                        <p className="font-medium mb-2">Installation steps:</p>
-                        <ol className="list-decimal list-inside space-y-1 text-sm">
-                          <li>Extract the ZIP file to Applications folder</li>
-                          <li>Open Terminal</li>
-                          <li>Navigate to the installation directory</li>
-                          <li>Run the following commands:</li>
-                        </ol>
-                        <div className="mt-2 bg-gray-800 text-gray-200 p-2 rounded text-sm font-mono">
-                          <code>
-                            npm install<br />
-                            sudo node install-service-mac.js
-                          </code>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+            
 
                   <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded p-4">
                     <h4 className="font-medium text-blue-800 dark:text-blue-300 mb-2">Important Note</h4>
