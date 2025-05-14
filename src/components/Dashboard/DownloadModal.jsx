@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
-import { Download, AppWindow, Apple, Terminal, X, AlertCircle } from 'lucide-react';
+import { Download, AppWindow, X, AlertCircle } from 'lucide-react';
 
 const DownloadModal = ({ isOpen, onClose }) => {
   const [error, setError] = useState(null);
 
-  const handleDownload = async (type) => {
+  const handleDownload = async () => {
     setError(null);
     const baseUrl = import.meta.env.VITE_RELEASE_URL;
     
@@ -15,7 +15,8 @@ const DownloadModal = ({ isOpen, onClose }) => {
       return;
     }
 
-    const fileName = type === 'windows' ? 'watchdog-client-windows.zip' : 'watchdog-client-mac.zip';
+    // Use only the Windows installer filename
+    const fileName = 'Digital-Signage-Watchdog-Setup-1.0.0.exe';
     const downloadUrl = `${baseUrl}/${fileName}`;
     
     try {
@@ -92,11 +93,11 @@ const DownloadModal = ({ isOpen, onClose }) => {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-4xl transform overflow-hidden rounded-2xl bg-white dark:bg-gray-800 p-6 text-left align-middle shadow-xl transition-all">
+              <Dialog.Panel className="w-full max-w-3xl transform overflow-hidden rounded-2xl bg-white dark:bg-gray-800 p-6 text-left align-middle shadow-xl transition-all">
                 <Dialog.Title as="div" className="flex justify-between items-center border-b pb-3 mb-5">
                   <h3 className="text-lg font-medium leading-6 text-gray-900 dark:text-white flex items-center gap-2">
                     <Download className="text-blue-500" size={20} />
-                    Download Watchdog Client
+                    Download Digital Signage Watchdog
                   </h3>
                   <button
                     onClick={onClose}
@@ -125,7 +126,7 @@ const DownloadModal = ({ isOpen, onClose }) => {
                     </div>
                     <div className="flex flex-col md:flex-row gap-6">
                       <button
-                        onClick={() => handleDownload('windows')}
+                        onClick={handleDownload}
                         className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
                       >
                         <Download size={16} />
@@ -134,27 +135,18 @@ const DownloadModal = ({ isOpen, onClose }) => {
                       <div className="text-gray-700 dark:text-gray-300">
                         <p className="font-medium mb-2">Installation steps:</p>
                         <ol className="list-decimal list-inside space-y-1 text-sm">
-                          <li>Extract the ZIP file to a permanent location (e.g., C:\Program Files\Digital Signage Watchdog)</li>
-                          <li>Open Command Prompt as Administrator</li>
-                          <li>Navigate to the installation directory</li>
-                          <li>Run the following commands:</li>
+                          <li>Run the downloaded installer (.exe file)</li>
+                          <li>Follow the installation wizard</li>
+                          <li>The application will start automatically after installation</li>
                         </ol>
-                        <div className="mt-2 bg-gray-800 text-gray-200 p-2 rounded text-sm font-mono">
-                          <code>
-                            npm install<br />
-                            node install-service.js
-                          </code>
-                        </div>
                       </div>
                     </div>
                   </div>
 
-            
-
                   <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded p-4">
                     <h4 className="font-medium text-blue-800 dark:text-blue-300 mb-2">Important Note</h4>
                     <p className="text-blue-700 dark:text-blue-400 text-sm">
-                      After installation, the watchdog service will automatically start with your system and maintain a connection with the dashboard.
+                      After installation, the Digital Signage Watchdog will run in the background and appear in your system tray. It will automatically monitor your system and maintain a connection with the dashboard.
                     </p>
                   </div>
                 </div>

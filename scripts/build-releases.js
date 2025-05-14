@@ -1,18 +1,19 @@
 import { exec } from 'child_process';
-import { promises as fs } from 'fs';
+import fs from 'fs';
+import { promises as fsPromises } from 'fs';
 import archiver from 'archiver';
 import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import { dirname, join, resolve } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 async function buildReleases() {
-  const clientDir = join(__dirname, '../client');
+  const clientDir = resolve(__dirname, '../../watchdog-client');
   const releaseDir = join(__dirname, '../releases');
   
   // Create releases directory
-  await fs.mkdir(releaseDir, { recursive: true });
+  await fsPromises.mkdir(releaseDir, { recursive: true });
   
   // Create Windows release
   const windowsZip = archiver('zip');

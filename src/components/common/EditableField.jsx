@@ -46,14 +46,18 @@ const EditableField = ({
   };
 
   if (isEditing) {
+    // Determine if we should render a textarea or input
+    const { as, ...restInputProps } = inputProps;
+    const InputComponent = as === 'textarea' ? 'textarea' : 'input';
+    
     return (
       <div className={`flex items-center gap-2 ${className}`}>
-        <input 
+        <InputComponent 
           value={editedValue}
           onChange={(e) => setEditedValue(e.target.value)}
-          className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 dark:text-white"
           disabled={isSaving}
-          {...inputProps}
+          {...restInputProps}
         />
         <button 
           onClick={handleSave}
@@ -77,7 +81,7 @@ const EditableField = ({
     <div className={`flex items-center gap-2 ${className}`}>
       {displayComponent || (
         <span className="text-gray-900 dark:text-white">
-          {value}
+          {value || 'N/A'}
         </span>
       )}
       <button 

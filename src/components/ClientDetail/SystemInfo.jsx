@@ -1,5 +1,5 @@
 import React from 'react';
-import { Monitor, Wifi, Tag, Clock, Cpu, Server } from 'lucide-react';
+import { Monitor, Wifi, Tag, Clock, Cpu, Server, Globe, HardDrive, Layers, Zap } from 'lucide-react';
 
 const SystemInfo = ({ client }) => {
   const formatUptime = (hours) => {
@@ -11,15 +11,25 @@ const SystemInfo = ({ client }) => {
       return `${days} days, ${Math.floor(remainingHours)} hours`;
     }
   };
+
+  const formatMemory = (memoryInMB) => {
+    if (memoryInMB >= 1024) {
+      return `${(memoryInMB / 1024).toFixed(1)} GB`;
+    }
+    return `${memoryInMB} MB`;
+  };
   
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-5">
-      <h3 className="font-medium text-lg mb-4 flex items-center text-white gap-2">
-        <Monitor className="text-white" size={20} />
+      <h3 className="font-medium text-lg mb-4 flex items-center text-gray-900 dark:text-white gap-2">
+        <Monitor className="text-gray-700 dark:text-gray-300" size={20} />
         System Information
       </h3>
       
       <div className="space-y-4">
+        {/* Network Information */}
+        <h4 className="font-medium text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wider mt-6 mb-2">Network</h4>
+        
         <div className="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
             <Tag size={16} className="text-gray-500" />
@@ -31,9 +41,17 @@ const SystemInfo = ({ client }) => {
         <div className="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
             <Wifi size={16} className="text-gray-500" />
-            <span className="font-medium">IP Address</span>
+            <span className="font-medium">Local IP</span>
           </div>
           <div className="text-gray-900 dark:text-white">{client.ipAddress}</div>
+        </div>
+
+        <div className="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-200 dark:border-gray-700">
+          <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+            <Globe size={16} className="text-gray-500" />
+            <span className="font-medium">Public IP</span>
+          </div>
+          <div className="text-gray-900 dark:text-white">{client.publicIpAddress || 'Not available'}</div>
         </div>
         
         <div className="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-200 dark:border-gray-700">
@@ -44,6 +62,9 @@ const SystemInfo = ({ client }) => {
           <div className="text-gray-900 dark:text-white">{client.macAddress || 'Not available'}</div>
         </div>
         
+        {/* System Information */}
+        <h4 className="font-medium text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wider mt-6 mb-2">System</h4>
+        
         <div className="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
             <Cpu size={16} className="text-gray-500" />
@@ -51,6 +72,53 @@ const SystemInfo = ({ client }) => {
           </div>
           <div className="text-gray-900 dark:text-white">{client.osName || 'Not available'}</div>
         </div>
+
+        <div className="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-200 dark:border-gray-700">
+          <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+            <Tag size={16} className="text-gray-500" />
+            <span className="font-medium">Build Number</span>
+          </div>
+          <div className="text-gray-900 dark:text-white">{client.buildNumber || 'Not available'}</div>
+        </div>
+
+        <div className="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-200 dark:border-gray-700">
+          <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+            <Cpu size={16} className="text-gray-500" />
+            <span className="font-medium">CPU</span>
+          </div>
+          <div className="text-gray-900 dark:text-white">{client.cpu || 'Not available'}</div>
+        </div>
+
+        <div className="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-200 dark:border-gray-700">
+          <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+            <Layers size={16} className="text-gray-500" />
+            <span className="font-medium">Memory</span>
+          </div>
+          <div className="text-gray-900 dark:text-white">{client.totalMemory ? formatMemory(client.totalMemory) : 'Not available'}</div>
+        </div>
+
+        <div className="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-200 dark:border-gray-700">
+          <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+            <HardDrive size={16} className="text-gray-500" />
+            <span className="font-medium">Storage</span>
+          </div>
+          <div className="text-gray-900 dark:text-white">
+            {client.storage ? 
+              `${client.storage.type} ${client.storage.total}GB (${client.storage.free}GB free)` : 
+              'Not available'}
+          </div>
+        </div>
+
+        <div className="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-200 dark:border-gray-700">
+          <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+            <Zap size={16} className="text-gray-500" />
+            <span className="font-medium">Graphics</span>
+          </div>
+          <div className="text-gray-900 dark:text-white">{client.graphicsCard || 'Not available'}</div>
+        </div>
+        
+        {/* Watchdog Information */}
+        <h4 className="font-medium text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wider mt-6 mb-2">Watchdog</h4>
         
         <div className="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">

@@ -21,7 +21,7 @@ const ClientTableRow = ({ client, onClick, onRestart, onShutdown }) => {
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
         <div className="text-sm font-medium text-gray-900 dark:text-white">
-          {client.name}
+          {client.name || 'N/A'}
         </div>
       </td>
       <td className="px-6 py-4 whitespace-nowrap hidden md:table-cell">
