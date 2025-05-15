@@ -134,7 +134,7 @@ const SystemInfo = ({ client }) => {
             <span className="font-medium">Uptime</span>
           </div>
           <div className="text-gray-900 dark:text-white">
-            {client.isOnline 
+            {(client.connected !== undefined ? client.connected : client.isOnline)
               ? formatUptime(client.uptimeHours)
               : 'Offline'
             }

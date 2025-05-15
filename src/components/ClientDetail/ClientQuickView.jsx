@@ -12,9 +12,15 @@ import SystemInfo from './SystemInfo';
 const ClientQuickView = ({ client, onClientUpdated }) => {
   if (!client) return null;
 
+  // Use either id or _id for MongoDB compatibility
+  const clientId = client.id || client._id;
+
+  // Determine if client is online based on connected property or isOnline
+  const isOnline = client.connected !== undefined ? client.connected : client.isOnline;
+
   const handleNameSave = async (newName) => {
     try {
-      await api.updateClient(client.id, { name: newName });
+      await api.updateClient(clientId, { name: newName });
       if (onClientUpdated) {
         onClientUpdated();
       }
@@ -26,7 +32,7 @@ const ClientQuickView = ({ client, onClientUpdated }) => {
 
   const handleDescriptionSave = async (newDescription) => {
     try {
-      await api.updateClient(client.id, { description: newDescription });
+      await api.updateClient(clientId, { description: newDescription });
       if (onClientUpdated) {
         onClientUpdated();
       }

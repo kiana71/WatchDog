@@ -11,13 +11,19 @@ import ClientActionButtons from './ClientActionButtons';
  * @param {function} props.onShutdown - Function to call when shutdown button is clicked
  */
 const ClientTableRow = ({ client, onClick, onRestart, onShutdown }) => {
+  // Handle both id and _id for MongoDB compatibility
+  const clientId = client.id || client._id;
+  
+  // Determine if client is online based on connected property or isOnline
+  const isOnline = client.connected !== undefined ? client.connected : client.isOnline;
+  
   return (
     <tr 
-      onClick={() => onClick(client.id)}
+      onClick={() => onClick(clientId)}
       className="hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
     >
       <td className="px-6 py-4 whitespace-nowrap">
-        <StatusBadge status={client.isOnline ? 'online' : 'offline'} />
+        <StatusBadge status={isOnline ? 'online' : 'offline'} />
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
         <div className="text-sm font-medium text-gray-900 dark:text-white">
@@ -41,8 +47,8 @@ const ClientTableRow = ({ client, onClick, onRestart, onShutdown }) => {
       </td>
       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
         <ClientActionButtons
-          isOnline={client.isOnline}
-          clientId={client.id}
+          isOnline={isOnline}
+          clientId={clientId}
           onRestart={onRestart}
           onShutdown={onShutdown}
         />

@@ -19,7 +19,8 @@ const ClientDetailSlideOver = ({
 
   const handleClientUpdated = async () => {
     if (client) {
-      await restartClient(client.id);
+      const clientId = client.id || client._id;
+      await restartClient(clientId);
     }
   };
 

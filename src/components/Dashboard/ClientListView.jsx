@@ -43,7 +43,7 @@ const ClientListView = ({
         <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
           {clients.map((client) => (
             <ClientTableRow
-              key={client.id}
+              key={client.id || client._id}
               client={client}
               onClick={onClientSelect}
               onRestart={onRestart}

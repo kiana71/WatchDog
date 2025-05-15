@@ -44,25 +44,33 @@ export const ClientsProvider = ({ children }) => {
       // First, signal the client to restart
       await api.restartClient(id);
       
+      // Determine the property based on API or database scheme
+      const onlineProperty = api.useMockData ? 'isOnline' : 'connected';
+      
       // Use updateClient to set the client offline with updated lastSeen
-      await api.updateClient(id, { 
-        isOnline: false, 
-        lastSeen: new Date().toISOString() 
-      });
+      const updateData = { lastSeen: new Date().toISOString() };
+      updateData[onlineProperty] = false;
+      await api.updateClient(id, updateData);
       
       // Update local state to reflect the change immediately
       setClients(prev => 
-        prev.map(client => 
-          client.id === id 
-            ? { ...client, isOnline: false, lastSeen: new Date().toISOString() }
-            : client
-        )
+        prev.map(client => {
+          const clientId = client.id || client._id;
+          if (clientId === id) {
+            const updatedClient = { ...client, lastSeen: new Date().toISOString() };
+            updatedClient[onlineProperty] = false;
+            return updatedClient;
+          }
+          return client;
+        })
       );
       
       // Simulate the client coming back online after a delay
       setTimeout(async () => {
         // Use updateClient to set the client back online
-        await api.updateClient(id, { isOnline: true });
+        const updateData = {};
+        updateData[onlineProperty] = true;
+        await api.updateClient(id, updateData);
         
         // Get the updated client data
         const updatedClient = await api.getClient(id);
@@ -70,9 +78,10 @@ export const ClientsProvider = ({ children }) => {
         // Update only this client in the state
         if (updatedClient) {
           setClients(prev => 
-            prev.map(client => 
-              client.id === id ? updatedClient : client
-            )
+            prev.map(client => {
+              const clientId = client.id || client._id;
+              return clientId === id ? updatedClient : client;
+            })
           );
         }
       }, 5000);
@@ -86,19 +95,25 @@ export const ClientsProvider = ({ children }) => {
       // Send shutdown command to the client
       await api.shutdownClient(id);
       
+      // Determine the property based on API or database scheme
+      const onlineProperty = api.useMockData ? 'isOnline' : 'connected';
+      
       // Use updateClient to set the client offline permanently with updated lastSeen
-      await api.updateClient(id, { 
-        isOnline: false, 
-        lastSeen: new Date().toISOString() 
-      });
+      const updateData = { lastSeen: new Date().toISOString() };
+      updateData[onlineProperty] = false;
+      await api.updateClient(id, updateData);
       
       // Update local state to reflect the change immediately
       setClients(prev => 
-        prev.map(client => 
-          client.id === id 
-            ? { ...client, isOnline: false, lastSeen: new Date().toISOString() }
-            : client
-        )
+        prev.map(client => {
+          const clientId = client.id || client._id;
+          if (clientId === id) {
+            const updatedClient = { ...client, lastSeen: new Date().toISOString() };
+            updatedClient[onlineProperty] = false;
+            return updatedClient;
+          }
+          return client;
+        })
       );
       
       // No automatic return to online state - stays offline until user turns it back on

@@ -22,7 +22,8 @@ const ClientList = () => {
     );
   }
 
-  const selectedClient = clients.find(client => client.id === selectedClientId);
+  // Find the selected client using either id or _id
+  const selectedClient = clients.find(client => (client.id || client._id) === selectedClientId);
   
   return (
     <div className="relative">
