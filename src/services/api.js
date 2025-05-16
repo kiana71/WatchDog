@@ -22,21 +22,23 @@ const getEnv = (key, defaultValue) => {
   return defaultValue;
 };
 
-// API base URL - will use environment variable in production
-const API_BASE_URL = getEnv('REACT_APP_API_URL', 'http://localhost:5000/api');
+// IMPORTANT: Hardcode API URL for now to force connection to Heroku
+const API_BASE_URL = 'https://signcast-watchdog-91d66c3ccf16.herokuapp.com/api';
+
+// Original dynamic URL (commented out for now)
+// const API_BASE_URL = getEnv('VITE_API_URL', 'https://signcast-watchdog-91d66c3ccf16.herokuapp.com/api');
 
 // Simulate network delay
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 // Helper function to determine if we should use mock data
 const useMockData = () => {
-  // FOR TESTING: Force to use real API
-  // Uncomment the line below when ready to test with real data
-  return false; // OVERRIDE - always use real API
+  // ALWAYS use real API with Heroku deployment
+  return false;
   
   // In development without proper env setup, default to mock data
-  // Force to false for testing
-  const useMock = getEnv('REACT_APP_USE_MOCK_API', 'true');
+  // This code is now unreachable but kept for reference
+  const useMock = getEnv('VITE_USE_MOCK_API', 'false');
   console.log('Using mock data:', useMock);
   return useMock === 'true';
 };

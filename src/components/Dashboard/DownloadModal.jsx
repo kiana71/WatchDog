@@ -46,7 +46,7 @@ const DownloadModal = ({ isOpen, onClose }) => {
           throw new Error(`Server error (HTTP ${response.status}). Please try again later.`);
         }
       }
-
+     
       // If the HEAD request succeeds, create a temporary anchor and trigger download
       const link = document.createElement('a');
       link.href = downloadUrl;
@@ -127,9 +127,9 @@ const DownloadModal = ({ isOpen, onClose }) => {
                     <div className="flex flex-col md:flex-row gap-6">
                       <button
                         onClick={handleDownload}
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                        className="inline-flex items-center h-12 gap-2 px-4 py-0 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
                       >
-                        <Download size={16} />
+                        <Download size={12} />
                         Download for Windows
                       </button>
                       <div className="text-gray-700 dark:text-gray-300">
