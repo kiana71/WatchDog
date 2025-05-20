@@ -21,9 +21,6 @@ const ClientQuickView = ({ client, onClientUpdated }) => {
   const handleNameSave = async (newName) => {
     try {
       await api.updateClient(clientId, { name: newName });
-      if (onClientUpdated) {
-        onClientUpdated();
-      }
     } catch (error) {
       console.error('Failed to update client name:', error);
       throw error;
@@ -33,9 +30,6 @@ const ClientQuickView = ({ client, onClientUpdated }) => {
   const handleDescriptionSave = async (newDescription) => {
     try {
       await api.updateClient(clientId, { description: newDescription });
-      if (onClientUpdated) {
-        onClientUpdated();
-      }
     } catch (error) {
       console.error('Failed to update client description:', error);
       throw error;

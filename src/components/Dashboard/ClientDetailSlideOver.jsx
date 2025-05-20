@@ -18,10 +18,8 @@ const ClientDetailSlideOver = ({
   const { restartClient } = useClients();
 
   const handleClientUpdated = async () => {
-    if (client) {
-      const clientId = client.id || client._id;
-      await restartClient(clientId);
-    }
+    // No longer automatically restart the client on updates
+    // This function is kept for future use if needed
   };
 
   return (
