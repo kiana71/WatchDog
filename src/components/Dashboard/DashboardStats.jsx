@@ -7,7 +7,7 @@ import { Activity, Monitor } from 'lucide-react';
  * @param {Array} props.clients - List of clients
  */
 const DashboardStats = ({ clients = [] }) => {
-  const onlineCount = clients.filter(client => client.isOnline).length;
+  const onlineCount = clients.filter(client => client.connected !== undefined ? client.connected : client.isOnline).length;
 
   return (
     <div className="flex items-center gap-6">
