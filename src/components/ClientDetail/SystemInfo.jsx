@@ -103,9 +103,21 @@ const SystemInfo = ({ client }) => {
             <span className="font-medium">Storage</span>
           </div>
           <div className="text-gray-900 dark:text-white">
-            {client.storage ? 
-              `${client.storage.type} ${client.storage.total}GB (${client.storage.free}GB free)` : 
-              'Not available'}
+            {client.storage ? (
+              <div className="space-y-1">
+                {Array.isArray(client.storage) ? (
+                  client.storage.map((drive, index) => (
+                    <div key={index} className="text-sm">
+                      {drive.mount} {drive.type} {drive.total}GB ({drive.free}GB free, {drive.usage}% used)
+                    </div>
+                  ))
+                ) : (
+                  `${client.storage.type} ${client.storage.total}GB (${client.storage.free}GB free)`
+                )}
+              </div>
+            ) : (
+              'Not available'
+            )}
           </div>
         </div>
 
