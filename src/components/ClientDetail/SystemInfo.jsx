@@ -81,28 +81,29 @@ const SystemInfo = ({ client }) => {
           <div className="text-gray-900 dark:text-white">{client.buildNumber || 'Not available'}</div>
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex flex-col mb-2 py-2 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
             <Cpu size={16} className="text-gray-500" />
             <span className="font-medium">CPU</span>
           </div>
-          <div className="text-gray-900 dark:text-white">{client.cpu || 'Not available'}</div>
+          <div className="text-gray-900 dark:text-white pl-6">{client.cpu || 'Not available'}</div>
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex flex-col mb-2 py-2 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
             <Layers size={16} className="text-gray-500" />
             <span className="font-medium">Memory</span>
           </div>
-          <div className="text-gray-900 dark:text-white">{client.totalMemory ? formatMemory(client.totalMemory) : 'Not available'}</div>
+          <div className="text-gray-900 dark:text-white pl-6">{client.totalMemory ? formatMemory(client.totalMemory) : 'Not available'}</div>
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-200 dark:border-gray-700">
-          <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+        <div className="flex flex-col py-2 border-b border-gray-200 dark:border-gray-700">
+          <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300 mb-2">
             <HardDrive size={16} className="text-gray-500" />
             <span className="font-medium">Storage</span>
           </div>
-          <div className="text-gray-900 dark:text-white">
+        
+          <div className="text-gray-900 dark:text-white pl-6">
             {client.storage ? (
               <div className="space-y-1">
                 {Array.isArray(client.storage) ? (
@@ -121,12 +122,12 @@ const SystemInfo = ({ client }) => {
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex flex-col mb-2 py-2 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
             <Zap size={16} className="text-gray-500" />
             <span className="font-medium">Graphics</span>
           </div>
-          <div className="text-gray-900 dark:text-white">{client.graphicsCard || 'Not available'}</div>
+          <div className="text-gray-900 dark:text-white pl-6">{client.graphicsCard || 'Not available'}</div>
         </div>
         
         {/* Watchdog Information */}
