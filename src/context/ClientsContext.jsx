@@ -6,7 +6,8 @@ const ClientsContext = createContext({
   clients: [],
   loading: false,
   restartClient: () => {},
-  shutdownClient: () => {}
+  shutdownClient: () => {},
+  refreshClients: () => {}
 });
 
 // Custom hook for using the context
@@ -17,27 +18,85 @@ export const ClientsProvider = ({ children }) => {
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchClients = async () => {
-      try {
-        const data = await api.getClients();
-        setClients(data);
-      } catch (error) {
-        console.error('Failed to fetch clients:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchClients = async () => {
+    try {
+      const data = await api.getClients();
+      
+      // Calculate isOnline status for each client
+      const clientsWithStatus = data.map(client => {
+        const connectionStatus = client.connected !== undefined ? client.connected : client.isOnline;
+        const lastSeen = new Date(client.lastSeen);
+        const now = new Date();
+        const timeDiff = (now - lastSeen) / 1000; // difference in seconds
+        
+        return {
+          ...client,
+          isOnline: connectionStatus && timeDiff <= 30
+        };
+      });
+      
+      setClients(clientsWithStatus);
+    } catch (error) {
+      console.error('Failed to fetch clients:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchClients();
 
     // Simulate periodic updates - in a real app, this would be WebSockets
     const interval = setInterval(() => {
       fetchClients();
-    }, 30000);
+    }, 5000);  // 5000 milliseconds = 5 seconds
 
     return () => clearInterval(interval);
   }, []);
+
+  const refreshClients = async () => {
+    setLoading(true);
+    try {
+      // Get current clients data
+      const data = await api.getClients();
+      
+      // Update lastSeen only for clients that were active in the last 30 seconds
+      const updatedClients = await Promise.all(
+        data.map(async (client) => {
+          const clientId = client.id || client._id;
+          const lastSeen = new Date(client.lastSeen);
+          const now = new Date();
+          const timeDiff = (now - lastSeen) / 1000; // difference in seconds
+          
+          // Check if client is currently connected
+          const isConnected = client.connected !== undefined ? client.connected : client.isOnline;
+          
+          // Only update lastSeen if client is connected AND was active in last 30 seconds
+          if (isConnected && timeDiff <= 30) {
+            const updateData = { lastSeen: now.toISOString() };
+            await api.updateClient(clientId, updateData);
+            return { 
+              ...client, 
+              lastSeen: updateData.lastSeen,
+              isOnline: true
+            };
+          }
+          
+          // For offline clients, keep their original lastSeen
+          return {
+            ...client,
+            isOnline: false
+          };
+        })
+      );
+      
+      setClients(updatedClients);
+    } catch (error) {
+      console.error('Failed to refresh clients:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const restartClient = async (id) => {
     try {
@@ -123,7 +182,7 @@ export const ClientsProvider = ({ children }) => {
   };
 
   return (
-    <ClientsContext.Provider value={{ clients, loading, restartClient, shutdownClient }}>
+    <ClientsContext.Provider value={{ clients, loading, restartClient, shutdownClient, refreshClients }}>
       {children}
     </ClientsContext.Provider>
   );

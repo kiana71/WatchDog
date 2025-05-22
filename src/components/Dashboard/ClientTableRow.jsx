@@ -14,8 +14,8 @@ const ClientTableRow = ({ client, onClick, onRestart, onShutdown }) => {
   // Handle both id and _id for MongoDB compatibility
   const clientId = client.id || client._id;
   
-  // Determine if client is online based on connected property or isOnline
-  const isOnline = client.connected !== undefined ? client.connected : client.isOnline;
+  // Use the pre-calculated isOnline status
+  const isOnline = client.isOnline;
   
   return (
     <tr 

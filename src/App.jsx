@@ -13,7 +13,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<DashboardLayout />}>
-              <Route index element={<ClientList />} />
+              <Route index element={<ClientList/>}/>
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
