@@ -29,9 +29,14 @@ export const ClientsProvider = ({ children }) => {
         const now = new Date();
         const timeDiff = (now - lastSeen) / 1000; // difference in seconds
         
+        // Consider client offline if:
+        // 1. They are marked as disconnected OR
+        // 2. Their lastSeen is more than 10 seconds ago (matching server logic)
+        const isOffline = !connectionStatus || timeDiff > 10;
+        
         return {
           ...client,
-          isOnline: connectionStatus && timeDiff <= 30
+          isOnline: !isOffline
         };
       });
       
@@ -46,10 +51,10 @@ export const ClientsProvider = ({ children }) => {
   useEffect(() => {
     fetchClients();
 
-    // Simulate periodic updates - in a real app, this would be WebSockets
+    // Refresh more frequently to catch disconnections sooner
     const interval = setInterval(() => {
       fetchClients();
-    }, 5000);  // 5000 milliseconds = 5 seconds
+    }, 2000);  // 2000 milliseconds = 2 seconds
 
     return () => clearInterval(interval);
   }, []);
