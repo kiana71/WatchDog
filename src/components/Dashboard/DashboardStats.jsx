@@ -9,7 +9,24 @@ import { useClients } from '../../context/ClientsContext';
  */
 const DashboardStats = ({ clients = [] }) => {
   const { refreshClients } = useClients();
-  const onlineCount = clients.filter(client => client.connected !== undefined ? client.connected : client.isOnline).length;
+  
+  // Debug logging
+  console.log('All clients:', clients.map(client => ({
+    computerName: client.computerName,
+    connected: client.connected,
+    isOnline: client.isOnline,
+    lastSeen: client.lastSeen
+  })));
+  
+  // Calculate online clients using the same logic as ClientsContext
+  const onlineCount = clients.filter(client => {
+    const connectionStatus = client.connected !== undefined ? client.connected : client.isOnline;
+    const lastSeen = new Date(client.lastSeen);
+    const now = new Date();
+    const timeDiff = (now - lastSeen) / 1000; // difference in seconds
+    const isOffline = !connectionStatus || timeDiff > 10;
+    return !isOffline;
+  }).length;
 
   return (
     <div className="flex items-center justify-between">

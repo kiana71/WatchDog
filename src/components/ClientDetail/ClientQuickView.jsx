@@ -77,6 +77,10 @@ const ClientQuickView = ({ client, onClientUpdated }) => {
             Last seen: {new Date(client.lastSeen).toLocaleString()}
           </h3>
         </div>
+        <div className="bg-gray-50 dark:bg-gray-700/30 p-4 rounded-lg mt-4">
+        <img src={client.image} alt="Client" className="w-16 h-16 rounded-full" />
+        
+        </div>
       </div>
       <SystemInfo client={client}/>
     </div>
