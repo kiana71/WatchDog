@@ -15,6 +15,7 @@ const ClientDetailSlideOver = ({
   isOpen,
   onClose,
 }) => {
+  //seems we are not using this line of
   const { restartClient } = useClients();
 
   const handleClientUpdated = async () => {

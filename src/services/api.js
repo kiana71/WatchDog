@@ -260,4 +260,19 @@ export const api = {
       throw error;
     }
   },
+
+  // Screenshot methods
+  async requestClientScreenshot(clientId) {
+    const response = await fetch(`${API_BASE_URL}/clients/${clientId}/screenshot`, {
+      method: 'POST'
+    });
+    if (!response.ok) throw new Error('Failed to request screenshot');
+    return response.json();
+  },
+
+  async getClientScreenshots(clientId) {
+    const response = await fetch(`${API_BASE_URL}/clients/${clientId}/screenshots`);
+    if (!response.ok) throw new Error('Failed to fetch screenshots');
+    return response.json();
+  },
 };

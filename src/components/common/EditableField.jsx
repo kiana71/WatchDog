@@ -64,7 +64,7 @@ const EditableField = ({
           disabled={isSaving}
           className="p-1 rounded-full hover:bg-green-100 dark:hover:bg-green-900/30 disabled:opacity-50"
         >
-          <Check size={16} className="text-green-600 dark:text-green-400" />
+          <Check size={16} className="text-green-600 dark:text-green-400"/>
         </button>
         <button 
           onClick={handleCancel}

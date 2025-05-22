@@ -2,7 +2,7 @@ import React from 'react';
 import { api } from '../../services/api';
 import EditableField from '../common/EditableField';
 import SystemInfo from './SystemInfo';
-
+import ScreenshotImg from './ScreenshotImg';
 /**
  * Component to display client quick view in a slide-over panel
  * @param {Object} props - Component props
@@ -78,8 +78,7 @@ const ClientQuickView = ({ client, onClientUpdated }) => {
           </h3>
         </div>
         <div className="bg-gray-50 dark:bg-gray-700/30 p-4 rounded-lg mt-4">
-        <img src={client.image} alt="Client" className="w-16 h-16 rounded-full" />
-        
+          <ScreenshotImg client={client} />
         </div>
       </div>
       <SystemInfo client={client}/>
