@@ -270,6 +270,17 @@ export const api = {
     return response.json();
   },
 
+  // Get single latest screenshot for a client (NEW API)
+  async getClientScreenshot(clientId) {
+    const response = await fetch(`${API_BASE_URL}/clients/${clientId}/screenshot`);
+    if (response.status === 404) {
+      return null; // No screenshot available
+    }
+    if (!response.ok) throw new Error('Failed to fetch screenshot');
+    return response.json();
+  },
+
+  // Get multiple screenshots for a client (OLD API - for backward compatibility)
   async getClientScreenshots(clientId) {
     const response = await fetch(`${API_BASE_URL}/clients/${clientId}/screenshots`);
     if (!response.ok) throw new Error('Failed to fetch screenshots');
