@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Camera, RefreshCw } from 'lucide-react';
 import { api } from '../../services/api';
 
@@ -9,15 +9,19 @@ const ScreenshotImg = ({ client }) => {
 
   const fetchScreenshots = async () => {
     try {
+      console.log('Fetching screenshots for client:', client.computerName);
       setLoading(true);
       setError(null);
       const screenshots = await api.getClientScreenshots(client.computerName);
+      console.log('Received screenshots:', screenshots);
       if (screenshots.length > 0) {
         setScreenshot(screenshots[0]);
+      } else {
+        console.log('No screenshots found');
       }
     } catch (err) {
-      setError('Failed to fetch screenshot');
       console.error('Error fetching screenshots:', err);
+      setError('Failed to fetch screenshot');
     } finally {
       setLoading(false);
     }
@@ -25,24 +29,21 @@ const ScreenshotImg = ({ client }) => {
 
   const requestScreenshot = async () => {
     try {
+      console.log('Requesting screenshot for client:', client.computerName);
       setLoading(true);
       setError(null);
-      await api.requestClientScreenshot(client.computerName);
+      const response = await api.requestClientScreenshot(client.computerName);
+      console.log('Screenshot request response:', response);
+      
       // Wait a moment for the screenshot to be taken and uploaded
+      console.log('Waiting 2 seconds before fetching...');
       setTimeout(fetchScreenshots, 2000);
     } catch (err) {
-      setError('Failed to request screenshot');
       console.error('Error requesting screenshot:', err);
-    } finally {
+      setError('Failed to request screenshot');
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    if (client) {
-      requestScreenshot();
-    }
-  }, [client]);
 
   return (
     <div className="relative">
@@ -54,9 +55,9 @@ const ScreenshotImg = ({ client }) => {
           onClick={requestScreenshot}
           disabled={loading}
           className="p-1 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50"
-          title="Refresh Screenshot"
+          title="Take Screenshot"
         >
-          <RefreshCw size={16} className={`text-gray-600 dark:text-gray-300 ${loading ? 'animate-spin' : ''}`} />
+          <Camera size={16} className={`text-gray-600 dark:text-gray-300 ${loading ? 'animate-spin' : ''}`} />
         </button>
       </div>
 
