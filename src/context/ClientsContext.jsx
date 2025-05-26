@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { api } from '../services/api';
+import { useRealtimeClients } from '../hooks/useRealtimeClients';
 
 // Create the context
 const ClientsContext = createContext({
@@ -51,10 +52,11 @@ export const ClientsProvider = ({ children }) => {
   useEffect(() => {
     fetchClients();
 
-    // Refresh more frequently to catch disconnections sooner
+    // Reduce polling frequency since we have real-time updates for disconnects
+    // Keep some polling for initial data and reconnection scenarios
     const interval = setInterval(() => {
       fetchClients();
-    }, 2000);  // 2000 milliseconds = 2 seconds
+    },2000);  // 10 seconds instead of 2 seconds
 
     return () => clearInterval(interval);
   }, []);
@@ -185,6 +187,27 @@ export const ClientsProvider = ({ children }) => {
       console.error('Failed to shut down client:', error);
     }
   };
+
+  // Handle real-time client status changes
+  const handleClientStatusChange = (statusData) => {
+    setClients(prevClients => {
+      return prevClients.map(client => {
+        if (client.computerName === statusData.computerName) {
+          return {
+            ...client,
+            connected: statusData.status === 'connected',
+            isOnline: statusData.status === 'connected',
+            lastSeen: statusData.timestamp,
+            lastDisconnected: statusData.status === 'disconnected' ? statusData.timestamp : client.lastDisconnected
+          };
+        }
+        return client;
+      });
+    });
+  };
+
+  // Set up real-time connection
+  useRealtimeClients(handleClientStatusChange);
 
   return (
     <ClientsContext.Provider value={{ clients, loading, restartClient, shutdownClient, refreshClients }}>

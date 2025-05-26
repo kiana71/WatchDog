@@ -24,7 +24,7 @@ const ScreenshotImg = ({ client }) => {
       // Use the new single screenshot API
       const screenshot = await api.getClientScreenshot(client.computerName);
       console.log('Received screenshot:', screenshot ? 'Found' : 'None');
-      
+
       if (screenshot) {
         setScreenshot(screenshot);
         setLastFetch(new Date());
