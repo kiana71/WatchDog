@@ -19,35 +19,28 @@ export const ClientsProvider = ({ children }) => {
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchClients = async () => {
-    try {
-      const data = await api.getClients();
+    const fetchClients = async () => {
+      try {
+        const data = await api.getClients();
       
-      // Calculate isOnline status for each client
+      // Trust the server's connected status - don't override it with lastSeen calculations
       const clientsWithStatus = data.map(client => {
-        const connectionStatus = client.connected !== undefined ? client.connected : client.isOnline;
-        const lastSeen = new Date(client.lastSeen);
-        const now = new Date();
-        const timeDiff = (now - lastSeen) / 1000; // difference in seconds
-        
-        // Consider client offline if:
-        // 1. They are marked as disconnected OR
-        // 2. Their lastSeen is more than 10 seconds ago (matching server logic)
-        const isOffline = !connectionStatus || timeDiff > 10;
+        // Use the server's connected status directly
+        const isOnline = client.connected !== undefined ? client.connected : false;
         
         return {
           ...client,
-          isOnline: !isOffline
+          isOnline: isOnline
         };
       });
       
       setClients(clientsWithStatus);
-    } catch (error) {
-      console.error('Failed to fetch clients:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+      } catch (error) {
+        console.error('Failed to fetch clients:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
   useEffect(() => {
     fetchClients();
@@ -67,35 +60,13 @@ export const ClientsProvider = ({ children }) => {
       // Get current clients data
       const data = await api.getClients();
       
-      // Update lastSeen only for clients that were active in the last 30 seconds
-      const updatedClients = await Promise.all(
-        data.map(async (client) => {
-          const clientId = client.id || client._id;
-          const lastSeen = new Date(client.lastSeen);
-          const now = new Date();
-          const timeDiff = (now - lastSeen) / 1000; // difference in seconds
-          
-          // Check if client is currently connected
-          const isConnected = client.connected !== undefined ? client.connected : client.isOnline;
-          
-          // Only update lastSeen if client is connected AND was active in last 30 seconds
-          if (isConnected && timeDiff <= 30) {
-            const updateData = { lastSeen: now.toISOString() };
-            await api.updateClient(clientId, updateData);
-            return { 
-              ...client, 
-              lastSeen: updateData.lastSeen,
-              isOnline: true
-            };
-          }
-          
-          // For offline clients, keep their original lastSeen
-          return {
-            ...client,
-            isOnline: false
-          };
-        })
-      );
+      // Trust the server's connected status - don't override with client-side calculations
+      const updatedClients = data.map(client => {
+        return {
+          ...client,
+          isOnline: client.connected !== undefined ? client.connected : false
+        };
+      });
       
       setClients(updatedClients);
     } catch (error) {

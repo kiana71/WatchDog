@@ -11,8 +11,8 @@ export const useRealtimeClients = (onClientStatusChange) => {
 
   const connect = () => {
     try {
-      // Use the same base URL as the API
-      const baseUrl = import.meta.env.VITE_API_URL || 'https://signcast-watchdog-91d66c3ccf16.herokuapp.com';
+      // Use the Heroku server directly (same as API service)
+      const baseUrl = 'https://signcast-watchdog-91d66c3ccf16.herokuapp.com';
       const eventSource = new EventSource(`${baseUrl}/api/clients/events`);
       
       eventSource.onopen = () => {

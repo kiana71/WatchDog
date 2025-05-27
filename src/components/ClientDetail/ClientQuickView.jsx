@@ -3,6 +3,7 @@ import { api } from '../../services/api';
 import EditableField from '../common/EditableField';
 import SystemInfo from './SystemInfo';
 import ScreenshotImg from './ScreenshotImg';
+import ClientName from './ClientName';
 /**
  * Component to display client quick view in a slide-over panel
  * @param {Object} props - Component props
@@ -71,14 +72,17 @@ const ClientQuickView = ({ client, onClientUpdated }) => {
             }
           />
         </div>
-        
+        <div className=" mt-4">
+        <ClientName client={client}/>
+        </div>
         <div className="bg-gray-50 dark:bg-gray-700/30 p-4 rounded-lg mt-4">
           <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
             Last seen: {new Date(client.lastSeen).toLocaleString()}
           </h3>
         </div>
+      
         <div className="bg-gray-50 dark:bg-gray-700/30 p-4 rounded-lg mt-4">
-          <ScreenshotImg client={client} />
+          <ScreenshotImg client={client}/>
         </div>
       </div>
       <SystemInfo client={client}/>
