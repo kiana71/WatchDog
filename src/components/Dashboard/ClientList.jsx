@@ -5,7 +5,9 @@ import DashboardHeader from './DashboardHeader';
 import DashboardStats from './DashboardStats';
 import ClientDetailSlideOver from './ClientDetailSlideOver';
 import DownloadModal from './DownloadModal';
-
+import Search from './Search';
+import Organization from './Organization';
+import Site from './Site';
 /**
  * Main dashboard component displaying client list and stats
  */
@@ -30,6 +32,12 @@ const ClientList = () => {
       <div className="mb-6">
         <DashboardHeader onDownloadClick={() => setIsDownloadModalOpen(true)} />
         <DashboardStats clients={clients} />
+        <div className="flex gap-4 items-center">
+          <Search/>
+          <Organization/>
+          <Site/>
+        </div>
+       
       </div>
 
       <ClientListView
