@@ -3,7 +3,6 @@ import { Search as SearchIcon, X } from 'lucide-react';
 
 const Search = () => {
    
-
     return (
         <form className="relative">
             <div className="relative">

@@ -8,6 +8,7 @@ import DownloadModal from './DownloadModal';
 import Search from './Search';
 import Organization from './Organization';
 import Site from './Site';
+import { Monitor } from 'lucide-react';
 /**
  * Main dashboard component displaying client list and stats
  */
@@ -41,7 +42,6 @@ const ClientList = () => {
       </div>
 
       <ClientListView
-
         clients={clients}
         onRestart={restartClient}
         onShutdown={shutdownClient}

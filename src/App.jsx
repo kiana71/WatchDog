@@ -5,6 +5,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import { ClientsProvider } from './context/ClientsContext';
 import DashboardLayout from './components/Dashboard/DashboardLayout';
 import ClientList from './components/Dashboard/ClientList';
+import OrganizationManagement from './components/Dashboard/OrganizationManagement';
 
 function App() {
   return (
@@ -13,9 +14,11 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<DashboardLayout />}>
-              <Route index element={<ClientList/>}/>
+              <Route index element={<Navigate to="/dashboard" replace />} />
+              <Route path="dashboard" element={<ClientList />} />
+              <Route path="organization" element={<OrganizationManagement />} />
             </Route>
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>
         </BrowserRouter>
       </ClientsProvider>
