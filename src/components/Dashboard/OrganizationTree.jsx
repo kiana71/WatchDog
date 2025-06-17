@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus } from 'lucide-react';
 import OrganizationCard from './organizations/OrganizationCard';
 import UnassignedClients from './organizations/UnassignedClients';
 import ConfirmDialog from '../common/ConfirmDialog';
+import { Box, Typography, CircularProgress, Alert } from '@mui/material';
+import { clientApi } from '../../services/clientApi';
 
 /**
  * Organization tree component with hierarchical structure
@@ -16,12 +18,12 @@ const OrganizationTree = ({
   setEditingOrg, 
   onAddOrganization,
   showSuccess,
-  showError
+  showError,
+  onClientSelect
 }) => {
-  const [unassignedClients, setUnassignedClients] = useState([
-    { id: 'client5', computerName: 'PC-UNASSIGNED-001', name: 'New Client 1' },
-    { id: 'client6', computerName: 'PC-UNASSIGNED-002', name: 'New Client 2' }
-  ]);
+  const [unassignedClients, setUnassignedClients] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const [expandedSites, setExpandedSites] = useState({});
   const [editingSite, setEditingSite] = useState(null);
@@ -64,37 +66,23 @@ const OrganizationTree = ({
 
   const handleRemoveClient = async (clientId, siteId) => {
     try {
-      let clientToMove = null;
+      await clientApi.removeClientFromSite(clientId, siteId);
       
-      for (const org of organizations) {
-        for (const site of org.sites) {
-          if (site.id === siteId) {
-            clientToMove = site.clients.find(client => client.id === clientId);
-            break;
-          }
-        }
-        if (clientToMove) break;
-      }
-
-      if (!clientToMove) {
-        showError('Client not found');
-        return;
-      }
-
+      // Update organizations state
       setOrganizations(prev => 
         prev.map(org => ({
           ...org,
           sites: org.sites.map(site => {
             if (site.id === siteId) {
-              return { ...site, clients: site.clients.filter(client => client.id !== clientId) };
+              return { ...site, clients: site.clients.filter(client => client._id !== clientId) };
             }
             return site;
           })
         }))
       );
 
-      setUnassignedClients(prev => [...prev, clientToMove]);
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // Refresh unassigned clients
+      await fetchUnassignedClients();
       showSuccess('Client moved to unassigned');
     } catch (error) {
       showError('Failed to remove client');
@@ -106,11 +94,12 @@ const OrganizationTree = ({
 
     try {
       const [orgId, siteId] = assignmentValue.split('-');
-      const clientToAssign = unassignedClients.find(client => client.id === clientId);
-      if (!clientToAssign) return;
-
-      setUnassignedClients(prev => prev.filter(client => client.id !== clientId));
-
+      await clientApi.assignClientToSite(clientId, siteId);
+      
+      // Update local state
+      setUnassignedClients(prev => prev.filter(client => client._id !== clientId));
+      
+      // Update organizations state to show the client in the assigned site
       setOrganizations(prev => 
         prev.map(org => {
           if (org.id === orgId) {
@@ -118,6 +107,7 @@ const OrganizationTree = ({
               ...org,
               sites: org.sites.map(site => {
                 if (site.id === siteId) {
+                  const clientToAssign = unassignedClients.find(c => c._id === clientId);
                   return { ...site, clients: [...site.clients, clientToAssign] };
                 }
                 return site;
@@ -128,11 +118,9 @@ const OrganizationTree = ({
         })
       );
 
-      await new Promise(resolve => setTimeout(resolve, 500));
       showSuccess('Client assigned successfully');
     } catch (error) {
       showError('Failed to assign client');
-      setUnassignedClients(prev => [...prev, unassignedClients.find(c => c.id === clientId)]);
     }
   };
 
@@ -243,6 +231,38 @@ const OrganizationTree = ({
       showError('Failed to delete site');
     }
   };
+
+  const fetchUnassignedClients = async () => {
+    try {
+      const data = await clientApi.getUnassignedClients();
+      setUnassignedClients(data);
+    } catch (error) {
+      console.error('Error fetching unassigned clients:', error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUnassignedClients();
+  }, []);
+
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box p={2}>
+        <Alert severity="error">{error}</Alert>
+      </Box>
+    );
+  }
 
   return (
     <div className="space-y-4">

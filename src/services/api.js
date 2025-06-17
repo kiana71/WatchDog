@@ -23,7 +23,7 @@ const getEnv = (key, defaultValue) => {
 };
 
 // IMPORTANT: Hardcode API URL for now to force connection to Heroku
-const API_BASE_URL = 'https://signcast-watchdog-91d66c3ccf16.herokuapp.com/api';
+export const API_BASE_URL = 'https://signcast-watchdog-91d66c3ccf16.herokuapp.com/api';
 
 // Original dynamic URL (commented out for now)
 // const API_BASE_URL = getEnv('VITE_API_URL', 'https://signcast-watchdog-91d66c3ccf16.herokuapp.com/api');
