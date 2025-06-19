@@ -1,16 +1,9 @@
 import React from 'react';
 
-const Organization = ({ selectedOrganization, onOrganizationChange }) => {
-  const testOrganizations = [
-    { id: 'all', name: 'All Organizations' },
-    { id: 'acme', name: 'Acme Corp' },
-    { id: 'tech', name: 'Tech Solutions' },
-    { id: 'startup', name: 'Startup Inc' }
-  ];
-
-//   const handleChange = (e) => {
-//     onOrganizationChange?.(e.target.value);
-//   };
+const Organization = ({ organizations = [], selectedOrganization, onOrganizationChange }) => {
+  const handleChange = (e) => {
+    onOrganizationChange?.(e.target.value);
+  };
 
   return (
     <div className="flex items-center space-x-3">
@@ -18,12 +11,13 @@ const Organization = ({ selectedOrganization, onOrganizationChange }) => {
         Organization:
       </label>
       <select
-        // value={selectedOrganization || 'all'}
-        // onChange={handleChange}
+        value={selectedOrganization || ''}
+        onChange={handleChange}
         className="w-48 px-3 py-2 text-left bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-colors text-gray-900 dark:text-white text-sm cursor-pointer"
       >
-        {testOrganizations.map((organization) => (
-          <option key={organization.id} value={organization.id}>
+        <option value="">All Organizations</option>
+        {organizations.map((organization) => (
+          <option key={organization._id} value={organization._id}>
             {organization.name}
           </option>
         ))}

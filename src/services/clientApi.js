@@ -26,7 +26,8 @@ export const clientApi = {
         body: JSON.stringify({ clientId }),
       });
       if (!response.ok) {
-        throw new Error('Failed to assign client');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `Failed to assign client: ${response.status}`);
       }
       return await response.json();
     } catch (error) {

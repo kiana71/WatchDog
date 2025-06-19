@@ -3,8 +3,8 @@ import { Plus } from 'lucide-react';
 import OrganizationCard from './organizations/OrganizationCard';
 import UnassignedClients from './organizations/UnassignedClients';
 import ConfirmDialog from '../common/ConfirmDialog';
-import { Box, Typography, CircularProgress, Alert } from '@mui/material';
 import { clientApi } from '../../services/clientApi';
+import { organizationApi } from '../../services/organizationApi';
 
 /**
  * Organization tree component with hierarchical structure
@@ -19,17 +19,13 @@ const OrganizationTree = ({
   onAddOrganization,
   showSuccess,
   showError,
-  onClientSelect
+  unassignedClients,
+  setUnassignedClients,
+  isCreatingOrg
 }) => {
-  const [unassignedClients, setUnassignedClients] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
   const [expandedSites, setExpandedSites] = useState({});
   const [editingSite, setEditingSite] = useState(null);
   const [confirmDialog, setConfirmDialog] = useState({ isOpen: false });
-
-  const generateId = () => Math.random().toString(36).substr(2, 9);
 
   const toggleOrganization = (orgId) => {
     setExpandedOrgs(prev => ({ ...prev, [orgId]: !prev[orgId] }));
@@ -39,28 +35,38 @@ const OrganizationTree = ({
     setExpandedSites(prev => ({ ...prev, [siteId]: !prev[siteId] }));
   };
 
+  const generateUniqueSiteName = (orgId) => {
+    const baseName = 'New Site';
+    const org = organizations.find(org => org._id === orgId);
+    if (!org || !org.sites) return baseName;
+    
+    const existingNames = org.sites.map(site => site.name);
+    
+    // Find the highest number suffix
+    let counter = 1;
+    while (existingNames.includes(`${baseName} ${counter}`)) {
+      counter++;
+    }
+    
+    return `${baseName} ${counter}`;
+  };
+
   const handleAddSite = async (orgId) => {
     try {
       const newSite = {
-        id: `site_${generateId()}`,
-        name: 'New Site',
+        name: generateUniqueSiteName(orgId),
         organizationId: orgId,
         clients: []
       };
       
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      setOrganizations(prev => 
-        prev.map(org => 
-          org.id === orgId ? { ...org, sites: [...org.sites, newSite] } : org
-        )
-      );
+      const createdSite = await organizationApi.createSite(orgId, newSite);
+      setOrganizations(prev => organizationApi.addSiteToOrganization(prev, orgId, createdSite));
       
       showSuccess('Site created successfully');
-      setExpandedSites(prev => ({ ...prev, [newSite.id]: true }));
-      setEditingSite(newSite.id);
+      setExpandedSites(prev => ({ ...prev, [createdSite._id]: true }));
+      setEditingSite(createdSite._id);
     } catch (error) {
-      showError('Failed to create site');
+      showError(error.message || 'Failed to create site');
     }
   };
 
@@ -68,21 +74,33 @@ const OrganizationTree = ({
     try {
       await clientApi.removeClientFromSite(clientId, siteId);
       
-      // Update organizations state
-      setOrganizations(prev => 
-        prev.map(org => ({
-          ...org,
-          sites: org.sites.map(site => {
-            if (site.id === siteId) {
-              return { ...site, clients: site.clients.filter(client => client._id !== clientId) };
-            }
-            return site;
-          })
-        }))
-      );
-
-      // Refresh unassigned clients
-      await fetchUnassignedClients();
+      // Find the client being removed
+      const clientToRemove = organizations
+        .flatMap(org => org.sites || [])
+        .flatMap(site => site.clients || [])
+        .find(client => client._id === clientId);
+      
+      if (clientToRemove) {
+        // Add client back to unassigned list
+        setUnassignedClients(prev => [...prev, clientToRemove]);
+        
+        // Remove client from organization state
+        setOrganizations(prev => 
+          prev.map(org => ({
+            ...org,
+            sites: org.sites.map(site => {
+              if (site._id === siteId) {
+                return {
+                  ...site,
+                  clients: (site.clients || []).filter(client => client._id !== clientId)
+                };
+              }
+              return site;
+            })
+          }))
+        );
+      }
+      
       showSuccess('Client moved to unassigned');
     } catch (error) {
       showError('Failed to remove client');
@@ -93,47 +111,42 @@ const OrganizationTree = ({
     if (!assignmentValue || assignmentValue === 'Assign to...') return;
 
     try {
+      console.log('Assigning client:', { clientId, assignmentValue });
       const [orgId, siteId] = assignmentValue.split('-');
+      console.log('Parsed assignment:', { orgId, siteId });
+      
+      // Find the client being assigned
+      const clientToAssign = unassignedClients.find(client => client._id === clientId);
+      if (!clientToAssign) {
+        throw new Error('Client not found in unassigned list');
+      }
+      
       await clientApi.assignClientToSite(clientId, siteId);
       
-      // Update local state
+      // Remove client from unassigned list
       setUnassignedClients(prev => prev.filter(client => client._id !== clientId));
       
-      // Update organizations state to show the client in the assigned site
-      setOrganizations(prev => 
-        prev.map(org => {
-          if (org.id === orgId) {
-            return {
-              ...org,
-              sites: org.sites.map(site => {
-                if (site.id === siteId) {
-                  const clientToAssign = unassignedClients.find(c => c._id === clientId);
-                  return { ...site, clients: [...site.clients, clientToAssign] };
-                }
-                return site;
-              })
-            };
-          }
-          return org;
-        })
-      );
-
+      // Update organization state to show the client in the assigned site
+      setOrganizations(prev => organizationApi.addClientToSite(prev, orgId, siteId, clientToAssign));
+      
       showSuccess('Client assigned successfully');
     } catch (error) {
-      showError('Failed to assign client');
+      console.error('Assignment error details:', error);
+      showError(`Failed to assign client: ${error.message}`);
     }
   };
 
   const handleSaveOrganization = async (orgId, field, value) => {
     try {
-      await new Promise(resolve => setTimeout(resolve, 500));
+      const orgToUpdate = organizations.find(org => org._id === orgId);
+      if (!orgToUpdate) throw new Error('Organization not found');
+
+      const updatedOrg = await organizationApi.updateOrganization(orgId, {
+        ...orgToUpdate,
+        [field]: value
+      });
       
-      setOrganizations(prev => 
-        prev.map(org => 
-          org.id === orgId ? { ...org, [field]: value } : org
-        )
-      );
-      
+      setOrganizations(prev => organizationApi.updateOrganizationInList(prev, updatedOrg));
       showSuccess(`Organization ${field} updated successfully`);
       setEditingOrg(null);
     } catch (error) {
@@ -143,17 +156,8 @@ const OrganizationTree = ({
 
   const handleSaveSite = async (siteId, name) => {
     try {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      setOrganizations(prev => 
-        prev.map(org => ({
-          ...org,
-          sites: org.sites.map(site => 
-            site.id === siteId ? { ...site, name } : site
-          )
-        }))
-      );
-      
+      const updatedSite = await organizationApi.updateSite(siteId, { name });
+      setOrganizations(prev => organizationApi.updateSiteInOrganization(prev, updatedSite.organization, siteId, updatedSite));
       showSuccess('Site name updated successfully');
       setEditingSite(null);
     } catch (error) {
@@ -162,8 +166,8 @@ const OrganizationTree = ({
   };
 
   const handleDeleteOrganization = (org) => {
-    const totalSites = org.sites.length;
-    const totalClients = org.sites.reduce((acc, site) => acc + site.clients.length, 0);
+    const totalSites = org.sites?.length || 0;
+    const totalClients = (org.sites || []).reduce((acc, site) => acc + (site.clients?.length || 0), 0);
 
     setConfirmDialog({
       isOpen: true,
@@ -173,58 +177,55 @@ const OrganizationTree = ({
         { icon: '✗', text: `Delete ${totalSites} sites` },
         { icon: '📤', text: `Move ${totalClients} clients to unassigned` }
       ],
-      onConfirm: () => deleteOrganization(org.id)
+      onConfirm: () => deleteOrganization(org._id)
     });
   };
 
   const deleteOrganization = async (orgId) => {
     try {
-      const orgToDelete = organizations.find(org => org.id === orgId);
-      if (orgToDelete) {
-        const allClients = orgToDelete.sites.flatMap(site => site.clients);
-        setUnassignedClients(prev => [...prev, ...allClients]);
-      }
+      const orgToDelete = organizations.find(org => org._id === orgId);
+      if (!orgToDelete) throw new Error('Organization not found');
 
-      await new Promise(resolve => setTimeout(resolve, 500));
-      setOrganizations(prev => prev.filter(org => org.id !== orgId));
+      const allClients = (orgToDelete.sites || []).flatMap(site => site.clients || []);
+      setUnassignedClients(prev => [...prev, ...allClients]);
+
+      await organizationApi.deleteOrganization(orgId);
+      setOrganizations(prev => organizationApi.removeOrganizationFromList(prev, orgId));
+      
       showSuccess('Organization deleted successfully');
       setConfirmDialog({ isOpen: false });
     } catch (error) {
-      showError('Failed to delete organization');
+      showError(error.message || 'Failed to delete organization');
     }
   };
 
   const handleDeleteSite = (site, orgName) => {
-    const clientCount = site.clients.length;
+    const clientCount = site.clients?.length || 0;
 
     setConfirmDialog({
       isOpen: true,
       title: `Delete "${site.name}" site?`,
       message: `This will remove the site from ${orgName}.`,
       details: [{ icon: '📤', text: `Move ${clientCount} clients to unassigned` }],
-      onConfirm: () => deleteSite(site.id)
+      onConfirm: () => deleteSite(site._id, site.organization)
     });
   };
 
-  const deleteSite = async (siteId) => {
+  const deleteSite = async (siteId, orgId) => {
     try {
-      let clientsToMove = [];
-      setOrganizations(prev => {
-        const newOrgs = prev.map(org => ({
-          ...org,
-          sites: org.sites.filter(site => {
-            if (site.id === siteId) {
-              clientsToMove = site.clients;
-              return false;
-            }
-            return true;
-          })
-        }));
-        return newOrgs;
-      });
+      const siteToDelete = organizations
+        .find(org => org._id === orgId)
+        ?.sites.find(site => site._id === siteId);
 
+      if (!siteToDelete) throw new Error('Site not found');
+
+      // Ensure clients is always an array before spreading
+      const clientsToMove = siteToDelete.clients || [];
       setUnassignedClients(prev => [...prev, ...clientsToMove]);
-      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      await organizationApi.deleteSite(siteId);
+      setOrganizations(prev => organizationApi.removeSiteFromOrganization(prev, orgId, siteId));
+      
       showSuccess('Site deleted successfully');
       setConfirmDialog({ isOpen: false });
     } catch (error) {
@@ -237,10 +238,7 @@ const OrganizationTree = ({
       const data = await clientApi.getUnassignedClients();
       setUnassignedClients(data);
     } catch (error) {
-      console.error('Error fetching unassigned clients:', error);
-      setError(error.message);
-    } finally {
-      setLoading(false);
+      showError(error.message);
     }
   };
 
@@ -248,29 +246,13 @@ const OrganizationTree = ({
     fetchUnassignedClients();
   }, []);
 
-  if (loading) {
-    return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
-        <CircularProgress />
-      </Box>
-    );
-  }
-
-  if (error) {
-    return (
-      <Box p={2}>
-        <Alert severity="error">{error}</Alert>
-      </Box>
-    );
-  }
-
   return (
     <div className="space-y-4">
       {organizations.map(org => (
         <OrganizationCard
-          key={org.id}
+          key={org._id}
           org={org}
-          isExpanded={expandedOrgs[org.id]}
+          isExpanded={expandedOrgs[org._id]}
           editingOrg={editingOrg}
           expandedSites={expandedSites}
           editingSite={editingSite}
@@ -289,11 +271,25 @@ const OrganizationTree = ({
 
       <button 
         onClick={onAddOrganization}
-        className="w-full p-4 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 hover:border-blue-500 dark:hover:border-blue-400 transition-colors"
+        disabled={isCreatingOrg}
+        className={`w-full p-4 border-2 border-dashed rounded-lg transition-colors ${
+          isCreatingOrg 
+            ? 'border-gray-300 dark:border-gray-600 text-gray-400 dark:text-gray-500 cursor-not-allowed' 
+            : 'border-gray-300 dark:border-gray-600 text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 hover:border-blue-500 dark:hover:border-blue-400'
+        }`}
       >
         <div className="flex items-center justify-center space-x-2">
-          <Plus size={20} />
-          <span>Add New Organization</span>
+          {isCreatingOrg ? (
+            <>
+              <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-current"></div>
+              <span>Creating Organization...</span>
+            </>
+          ) : (
+            <>
+              <Plus size={20} />
+              <span>Add New Organization</span>
+            </>
+          )}
         </div>
       </button>
 

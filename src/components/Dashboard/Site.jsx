@@ -2,12 +2,7 @@ import React from 'react';
 
 const Site = ({ selectedSite, onSiteChange }) => {
   const testSites = [
-    { id: 'all', name: 'All Sites' },
-    { id: 'headquarters', name: 'Headquarters' },
-    { id: 'branch-1', name: 'Branch Office 1' },
-    { id: 'branch-2', name: 'Branch Office 2' },
-    { id: 'remote', name: 'Remote Locations' },
-    {id: 'noName' , name: 'no name one'}
+    { id: 'all', name: 'All Sites' }
   ];
 
   // const handleChange = (e) => {

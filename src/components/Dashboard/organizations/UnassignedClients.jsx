@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Typography, List, ListItem, ListItemText, Select, MenuItem, FormControl, Popper, Paper } from '@mui/material';
+import { Box, Typography, List, ListItem, ListItemText, Select, MenuItem, FormControl, Popper, Paper, InputLabel } from '@mui/material';
 import { Circle } from 'lucide-react';
 import { useTheme } from '../../../context/ThemeContext';
 
@@ -8,17 +8,20 @@ const UnassignedClients = ({ clients = [], organizations = [], onAssignClient })
   const isDarkMode = theme === 'dark';
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedOrg, setSelectedOrg] = useState(null);
+  const [selectedClientId, setSelectedClientId] = useState(null);
   const [isSubmenuHovered, setIsSubmenuHovered] = useState(false);
 
-  const handleOrgHover = (event, org) => {
+  const handleOrgHover = (event, org, clientId) => {
     setAnchorEl(event.currentTarget);
     setSelectedOrg(org);
+    setSelectedClientId(clientId);
   };
 
   const handleClose = () => {
     if (!isSubmenuHovered) {
       setAnchorEl(null);
       setSelectedOrg(null);
+      setSelectedClientId(null);
     }
   };
 
@@ -116,60 +119,18 @@ const UnassignedClients = ({ clients = [], organizations = [], onAssignClient })
               }
             />
             <FormControl size="small" sx={{ minWidth: 200 }}>
+              <InputLabel id={`client-${client._id}-label`}>Assign to...</InputLabel>
               <Select
+                labelId={`client-${client._id}-label`}
                 value=""
-                onChange={(e) => onAssignClient(client._id, e.target.value)}
-                displayEmpty
-                MenuProps={{
-                  PaperProps: {
-                    sx: {
-                      bgcolor: isDarkMode ? '#1f2937' : 'white',
-                      '& .MuiMenuItem-root': {
-                        bgcolor: isDarkMode ? '#1f2937' : 'white',
-                        '&:hover': {
-                          bgcolor: isDarkMode ? '#374151' : '#f3f4f6'
-                        }
-                      }
-                    }
-                  }
-                }}
-                sx={{
-                  '& .MuiSelect-select': {
-                    color: isDarkMode ? '#9ca3af' : '#6b7280'
-                  },
-                  bgcolor: isDarkMode ? '#1f2937' : 'white',
-                  '&:hover': {
-                    bgcolor: isDarkMode ? '#374151' : '#f3f4f6'
-                  },
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    borderColor: isDarkMode ? '#374151' : '#e5e7eb'
-                  },
-                  '&:hover .MuiOutlinedInput-notchedOutline': {
-                    borderColor: isDarkMode ? '#4b5563' : '#d1d5db'
-                  }
-                }}
+                onChange={() => {}}
+                label="Assign to..."
               >
-                <MenuItem 
-                  value="" 
-                  sx={{
-                    color: isDarkMode ? '#f3f4f6' : '#6b7280',
-                    fontWeight: 500
-                  }}
-                >
-                  <Typography
-                    sx={{
-                      color: isDarkMode ? '#f3f4f6' : '#6b7280',
-                      fontWeight: 500
-                    }}
-                  >
-                    Assign to...
-                  </Typography>
-                </MenuItem>
                 {organizations.map((org) => (
                   <MenuItem
-                    key={org.id}
+                    key={org._id}
                     value=""
-                    onMouseEnter={(e) => handleOrgHover(e, org)}
+                    onMouseEnter={(e) => handleOrgHover(e, org, client._id)}
                     onMouseLeave={handleClose}
                     sx={{
                       fontWeight: 'bold',
@@ -184,7 +145,7 @@ const UnassignedClients = ({ clients = [], organizations = [], onAssignClient })
                 ))}
               </Select>
               <Popper
-                open={Boolean(anchorEl)}
+                open={Boolean(anchorEl) && selectedClientId === client._id}
                 anchorEl={anchorEl}
                 placement="right-start"
                 onMouseLeave={() => setIsSubmenuHovered(false)}
@@ -199,13 +160,13 @@ const UnassignedClients = ({ clients = [], organizations = [], onAssignClient })
                     mt: 0
                   }}
                 >
-                  {selectedOrg?.sites.map((site) => (
+                  {selectedOrg?.sites?.map((site) => (
                     <MenuItem
-                      key={`${selectedOrg.id}-${site.id}`}
-                      value={`${selectedOrg.id}-${site.id}`}
+                      key={`${selectedOrg._id}-${site._id}`}
+                      value={`${selectedOrg._id}-${site._id}`}
                       onClick={(e) => {
                         e.stopPropagation();
-                        onAssignClient(client._id, `${selectedOrg.id}-${site.id}`);
+                        onAssignClient(client._id, `${selectedOrg._id}-${site._id}`);
                         handleClose();
                       }}
                       sx={{ 

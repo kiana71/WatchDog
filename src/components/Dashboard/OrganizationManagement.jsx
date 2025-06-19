@@ -1,97 +1,102 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import OrganizationHeader from './OrganizationHeader';
 import OrganizationStats from './OrganizationStats';
 import OrganizationTree from './OrganizationTree';
 import ToastContainer from '../common/ToastContainer';
 import { useToast } from '../../hooks/useToast';
+import { organizationApi } from '../../services/organizationApi';
+import { clientApi } from '../../services/clientApi';
 
 /**
  * Organization Management component for managing organizations and sites
  */
 const OrganizationManagement = () => {
   const { toasts, removeToast, showSuccess, showError } = useToast();
-
-  // Move organizations state to parent
-  const [organizations, setOrganizations] = useState([
-    {
-      id: 'org1',
-      name: 'Acme Corp',
-      description: 'Main corporate organization',
-      sites: [
-        {
-          id: 'site1',
-          name: 'Headquarters',
-          organizationId: 'org1',
-          clients: [
-            { id: 'client1', computerName: 'PC-HQ-001', name: 'Reception Display' },
-            { id: 'client2', computerName: 'PC-HQ-002', name: 'Lobby Screen' }
-          ]
-        },
-        {
-          id: 'site2', 
-          name: 'Branch Office 1',
-          organizationId: 'org1',
-          clients: [
-            { id: 'client3', computerName: 'PC-BR1-001', name: 'Main Display' }
-          ]
-        }
-      ]
-    },
-    {
-      id: 'org2',
-      name: 'Tech Solutions',
-      description: 'Technology services division',
-      sites: [
-        {
-          id: 'site3',
-          name: 'Development Center',
-          organizationId: 'org2',
-          clients: [
-            { id: 'client4', computerName: 'PC-DEV-001', name: 'Dev Display' }
-          ]
-        }
-      ]
-    }
-  ]);
-
+  const [organizations, setOrganizations] = useState([]);
+  const [unassignedClients, setUnassignedClients] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [expandedOrgs, setExpandedOrgs] = useState({});
   const [editingOrg, setEditingOrg] = useState(null);
+  const [isCreatingOrg, setIsCreatingOrg] = useState(false);
 
-  // Generate unique IDs
-  const generateId = () => Math.random().toString(36).substr(2, 9);
-
-  // Add new organization
-  const handleAddOrganization = async () => {
+  const fetchData = async () => {
     try {
+      setLoading(true);
+      const [orgsData, unassignedData] = await Promise.all([
+        organizationApi.getOrganizations(),
+        clientApi.getUnassignedClients()
+      ]);
+      setOrganizations(orgsData);
+      setUnassignedClients(unassignedData);
+    } catch (error) {
+      showError('Failed to fetch data');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const generateUniqueOrgName = () => {
+    const baseName = 'New Organization';
+    const existingNames = organizations.map(org => org.name);
+    
+    // Find the highest number suffix
+    let counter = 1;
+    while (existingNames.includes(`${baseName} ${counter}`)) {
+      counter++;
+    }
+    
+    return `${baseName} ${counter}`;
+  };
+
+  const handleAddOrganization = async () => {
+    if (isCreatingOrg) return; // Prevent multiple clicks
+    
+    try {
+      setIsCreatingOrg(true);
       const newOrg = {
-        id: `org_${generateId()}`,
-        name: 'New Organization',
-        description: 'Click to edit description',
-        sites: []
+        name: generateUniqueOrgName(),
+        description: 'N/A'
       };
 
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 500));
+      const createdOrg = await organizationApi.createOrganization(newOrg);
       
-      // Add to organizations state
-      setOrganizations(prev => [...prev, newOrg]);
+      // Update organizations state with the new organization
+      setOrganizations(prev => [...prev, createdOrg]);
       
-      // Auto-expand and edit the new organization
-      setExpandedOrgs(prev => ({ ...prev, [newOrg.id]: true }));
-      //explain expand
-      setEditingOrg(`${newOrg.id}-name`);
+      // Expand the new organization
+      setExpandedOrgs(prev => ({ ...prev, [createdOrg._id]: true }));
+      
+      // Set editing state for the new organization
+      setEditingOrg(`${createdOrg._id}-name`);
       
       showSuccess('Organization created successfully');
     } catch (error) {
-      showError('Failed to create organization');
+      showError(error.message || 'Failed to create organization');
+    } finally {
+      setIsCreatingOrg(false);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 dark:border-blue-400"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
       <OrganizationHeader onAddOrganization={handleAddOrganization} />
       
-      <OrganizationStats organizations={organizations} />
+      <OrganizationStats 
+        organizations={organizations} 
+        unassignedClients={unassignedClients}
+      />
 
       <OrganizationTree 
         organizations={organizations}
@@ -103,6 +108,9 @@ const OrganizationManagement = () => {
         onAddOrganization={handleAddOrganization}
         showSuccess={showSuccess}
         showError={showError}
+        unassignedClients={unassignedClients}
+        setUnassignedClients={setUnassignedClients}
+        isCreatingOrg={isCreatingOrg}
       />
 
       <ToastContainer toasts={toasts} onRemoveToast={removeToast} />
