@@ -16,16 +16,20 @@ import { Monitor } from 'lucide-react';
  */
 
 const ClientList = () => {
-  const { clients, loading, restartClient, shutdownClient } = useClients();
-  const [selectedClientId, setSelectedClientId] = useState(null);
-  const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
-  
+
+  const { clients, loading, restartClient, shutdownClient } = useClients();//clients
+  const [selectedClientId, setSelectedClientId] = useState(null);//selected client id
+  const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);//download modal open
+
   // Organization and site filtering state
-  const [organizations, setOrganizations] = useState([]);
-  const [selectedOrganization, setSelectedOrganization] = useState('');
-  const [selectedSite, setSelectedSite] = useState('');
-  const [filteredClients, setFilteredClients] = useState([]);
-  const [loadingOrganizations, setLoadingOrganizations] = useState(true);
+  const [organizations, setOrganizations] = useState([]);//organizations
+  const [selectedOrganization, setSelectedOrganization] = useState('');//selected organization
+  const [selectedSite, setSelectedSite] = useState('');//selected site
+  const [filteredClients, setFilteredClients] = useState([]); //filtered clients
+  const [loadingOrganizations, setLoadingOrganizations] = useState(true);//load stet
+  const [searchQuery, setSearchQuery] = useState('');// seach value
+  const [sortColumn, setSortColumn] = useState('name'); // default sort by name
+  const [sortDirection, setSortDirection] = useState('asc'); // or 'desc'
 
   // Load organizations on component mount
   useEffect(() => {
@@ -82,7 +86,7 @@ const ClientList = () => {
       if (selectedSite && selectedSite !== '') {
         const targetSite = selectedOrg.sites.find(site => site._id === selectedSite);
         if (targetSite && targetSite.clients) {
-          const siteClientIds = targetSite.clients.map(client => client._id || client.id);
+          const siteClientIds = targetSite.clients.map(client => client._id || client.id); 
           filtered = filtered.filter(client => 
             siteClientIds.includes(client._id || client.id)
           );
@@ -119,16 +123,52 @@ const ClientList = () => {
     );
   }
 
+  const searchedClient = filteredClients.filter(client => {
+    const query = searchQuery.toLowerCase();
+    return (
+      (client.name && client.name.toLowerCase().includes(query)) ||
+      (client.computerName && client.computerName.toLowerCase().includes(query)) ||
+      (client.ipAddress && client.ipAddress.toLowerCase().includes(query)) ||
+      (client.osName && client.osName.toLowerCase().includes(query))
+    );
+  });
+
+  // Sort the searchedClient array
+  const sortedClients = [...searchedClient].sort((a, b) => {
+    let aValue = a[sortColumn] || '';
+    let bValue = b[sortColumn] || '';
+    // Special handling for status
+    if (sortColumn === 'status') {
+      aValue = a.status === 'online' ? 1 : 0;
+      bValue = b.status === 'online' ? 1 : 0;
+    }
+    if (typeof aValue === 'string') aValue = aValue.toLowerCase();
+    if (typeof bValue === 'string') bValue = bValue.toLowerCase();
+    //bob - alice
+    if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1; //a comes first
+    if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1; // b comes first
+    return 0;
+  });
+
+  const handleSort = (column) => {
+    if (sortColumn === column) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortColumn(column);
+      setSortDirection('asc');
+    }
+  };
+
   // Find the selected client using either id or _id
   const selectedClient = filteredClients.find(client => (client.id || client._id) === selectedClientId);
-  
+
   return (
     <div className="relative">
       <div className="mb-6">
         <DashboardHeader onDownloadClick={() => setIsDownloadModalOpen(true)} />
         <DashboardStats clients={filteredClients} />
         <div className="flex gap-4 items-center">
-          <Search/>
+          <Search value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
           <Organization 
             organizations={organizations}
             selectedOrganization={selectedOrganization}
@@ -146,10 +186,13 @@ const ClientList = () => {
       </div>
 
       <ClientListView
-        clients={filteredClients}
+        clients={sortedClients}
         onRestart={restartClient}
         onShutdown={shutdownClient}
         onClientSelect={setSelectedClientId}
+        sortColumn={sortColumn}
+        sortDirection={sortDirection}
+        onSort={handleSort}
       />
 
       <ClientDetailSlideOver

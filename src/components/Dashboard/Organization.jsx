@@ -26,7 +26,8 @@ const Organization = ({
         </option>
         {organizations.map((organization) => (
           <option key={organization._id} value={organization._id}>
-            {organization.name} ({organization.sites?.length || 0} sites)
+            {organization.name} 
+            {/* ({organization.sites?.length || 0} sites) */}
           </option>
         ))}
       </select>

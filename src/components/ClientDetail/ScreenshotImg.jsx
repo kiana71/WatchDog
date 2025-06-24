@@ -7,7 +7,7 @@ const ScreenshotImg = ({ client }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [lastFetch, setLastFetch] = useState(null);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   // Fetch screenshot when component mounts or client changes
   useEffect(() => {
     if (client?.computerName) {
@@ -99,25 +99,32 @@ const ScreenshotImg = ({ client }) => {
           {error}
         </div>
       )}
-
       <div className="relative aspect-video bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden">
         {loading && !screenshot ? (
           <div className="absolute inset-0 flex items-center justify-center">
             <RefreshCw size={24} className="animate-spin text-gray-400" />
           </div>
         ) : screenshot ? (
-          <>
+          <div
+            className="relative w-full h-full cursor-pointer group"
+            onClick={() => setIsModalOpen(true)}
+          >
+            
             <img
               src={`data:image/${screenshot.format};base64,${screenshot.image}`}
               alt={`Screenshot from ${new Date(screenshot.timestamp).toLocaleString()}`}
               className="w-full h-full object-contain"
             />
+            {/* Overlay */}
+            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity">
+              <span className="text-white text-lg font-semibold">Click to view</span>
+            </div>
             {loading && (
               <div className="absolute top-2 right-2 bg-black bg-opacity-50 rounded-lg p-1">
                 <RefreshCw size={16} className="animate-spin text-white" />
               </div>
             )}
-          </>
+          </div>
         ) : (
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <Camera size={32} className="text-gray-400 mb-2" />
@@ -129,6 +136,34 @@ const ScreenshotImg = ({ client }) => {
           </div>
         )}
       </div>
+      {/* Modal for viewing screenshot */}
+      {isModalOpen && screenshot && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80"
+          onClick={() => setIsModalOpen(false)}
+        >
+          <div
+            className="relative w-full h-full flex items-center justify-center p-0"
+            onClick={e => e.stopPropagation()} // Prevent closing when clicking the image
+          >
+            <button
+              className="absolute top-10 right-44 text-white bg-red-100 bg-opacity-50 rounded-full w-10 h-10 p-2 hover:bg-opacity-80 focus:outline-none z-10"
+              onClick={() => setIsModalOpen(false)}
+              aria-label="Close"
+            >
+              ×
+            </button>
+            <img
+              src={`data:image/${screenshot.format};base64,${screenshot.image}`}
+              alt={`Screenshot from ${new Date(screenshot.timestamp).toLocaleString()}`}
+              className="max-w-[95vw] max-h-[90vh] w-auto h-auto rounded-lg shadow-lg object-contain mx-auto"
+            />
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-center text-gray-200 text-xs bg-black bg-opacity-40 px-2 py-1 rounded">
+              {new Date(screenshot.timestamp).toLocaleString()}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

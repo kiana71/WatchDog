@@ -11,12 +11,12 @@ const DashboardStats = ({ clients = [] }) => {
   const { refreshClients } = useClients();
   
   // Debug logging
-  console.log('All clients:', clients.map(client => ({
-    computerName: client.computerName,
-    connected: client.connected,
-    isOnline: client.isOnline,
-    lastSeen: client.lastSeen
-  })));
+  // console.log('All clients:', clients.map(client => ({
+  //   computerName: client.computerName,
+  //   connected: client.connected,
+  //   isOnline: client.isOnline,
+  //   lastSeen: client.lastSeen
+  // })));
   
   // Calculate online clients using the same logic as ClientsContext
   const onlineCount = clients.filter(client => {

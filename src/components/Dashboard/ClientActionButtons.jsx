@@ -15,7 +15,9 @@ const ClientActionButtons = ({ isOnline, clientId, onRestart, onShutdown }) => {
       <button
         onClick={(e) => {
           e.stopPropagation();
-          onRestart(clientId);
+          if (window.confirm('Are you sure you want to restart this computer?')) {
+            onRestart(clientId);
+          }
         }}
         className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300"
         title="Restart Computer"
@@ -25,7 +27,9 @@ const ClientActionButtons = ({ isOnline, clientId, onRestart, onShutdown }) => {
       <button
         onClick={(e) => {
           e.stopPropagation();
-          onShutdown(clientId);
+          if (window.confirm('Are you sure you want to shutdown this computer?')) {
+            onShutdown(clientId);
+          }
         }}
         className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300"
         disabled={!isOnline}

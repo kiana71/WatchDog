@@ -55,7 +55,7 @@ export const api = {
     }
     
     try {
-      console.log('Fetching clients from:', `${API_BASE_URL}/clients`);
+      // console.log('Fetching clients from:', `${API_BASE_URL}/clients`);
       const response = await fetch(`${API_BASE_URL}/clients`);
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
