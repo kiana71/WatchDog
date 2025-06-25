@@ -118,13 +118,59 @@ const UnassignedClients = ({ clients = [], organizations = [], onAssignClient })
                 </Box>
               }
             />
-            <FormControl size="small" sx={{ minWidth: 200 }}>
+            <FormControl 
+              size="small" 
+              sx={{ 
+                minWidth: 200,
+                '& .MuiOutlinedInput-root': {
+                  bgcolor: isDarkMode ? '#1f2937' : 'white',
+                  borderColor: isDarkMode ? '#374151' : '#d1d5db',
+                  '& fieldset': {
+                    borderColor: isDarkMode ? '#374151' : '#d1d5db',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: isDarkMode ? '#6b7280' : '#9ca3af',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: isDarkMode ? '#3b82f6' : '#3b82f6',
+                  }
+                },
+                '& .MuiInputLabel-root': {
+                  color: isDarkMode ? '#9ca3af' : '#6b7280',
+                  '&.Mui-focused': {
+                    color: isDarkMode ? '#3b82f6' : '#3b82f6',
+                  }
+                },
+                '& .MuiSelect-icon': {
+                  color: isDarkMode ? '#9ca3af' : '#6b7280',
+                }
+              }}
+            >
               <InputLabel id={`client-${client._id}-label`}>Assign to...</InputLabel>
               <Select
                 labelId={`client-${client._id}-label`}
                 value=""
                 onChange={() => {}}
                 label="Assign to..."
+                MenuProps={{
+                  PaperProps: {
+                    sx: {
+                      bgcolor: isDarkMode ? '#1f2937' : 'white',
+                      '& .MuiMenuItem-root': {
+                        color: isDarkMode ? '#f3f4f6' : '#111827',
+                        '&:hover': {
+                          bgcolor: isDarkMode ? '#374151' : '#f3f4f6'
+                        }
+                      }
+                    }
+                  }
+                }}
+                sx={{
+                  color: isDarkMode ? '#f3f4f6' : '#111827',
+                  '& .MuiSelect-select': {
+                    bgcolor: isDarkMode ? '#1f2937' : 'white',
+                  }
+                }}
               >
                 {organizations.map((org) => (
                   <MenuItem
@@ -134,9 +180,10 @@ const UnassignedClients = ({ clients = [], organizations = [], onAssignClient })
                     onMouseLeave={handleClose}
                     sx={{
                       fontWeight: 'bold',
-                      color: '#3b82f6',
+                      color: isDarkMode ? '#3b82f6' : '#1c1c1c',
+                      backgroundColor: isDarkMode ? '#1f2937' : 'white',
                       '&:hover': {
-                        backgroundColor: 'transparent'
+                        backgroundColor: isDarkMode ? '#374151' : '#f3f4f6'
                       }
                     }}
                   >

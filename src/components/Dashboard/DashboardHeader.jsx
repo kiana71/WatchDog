@@ -1,6 +1,6 @@
 import React from 'react';
 import { Download } from 'lucide-react';
-import { useTheme } from '../../context/ThemeContext';
+// import { useTheme } from '../../context/ThemeContext';
 
 /**
  * Dashboard header component with title and action buttons
@@ -8,7 +8,7 @@ import { useTheme } from '../../context/ThemeContext';
  * @param {function} props.onDownloadClick - Function to handle download button click
  */
 const DashboardHeader = ({ onDownloadClick }) => {
-  const { theme, toggleTheme } = useTheme();
+  // const { theme, toggleTheme } = useTheme();
 
   return (
     <div className="flex justify-between items-center mb-4">
@@ -21,12 +21,12 @@ const DashboardHeader = ({ onDownloadClick }) => {
           <Download size={16} />
           Download Watchdog
         </button>
-        <button
+        {/* <button
           onClick={toggleTheme}
           className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
         >
           {theme === 'light' ? '🌙' : '☀️'}
-        </button>
+        </button> */}
       </div>
     </div>
   );

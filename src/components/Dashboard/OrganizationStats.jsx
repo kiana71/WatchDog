@@ -1,5 +1,4 @@
 import React from 'react';
-import { Box, Typography, Paper } from '@mui/material';
 import { Building2, MapPin, Users, UserPlus } from 'lucide-react';
 
 const OrganizationStats = ({ organizations = [], unassignedClients = [] }) => {
@@ -12,63 +11,63 @@ const OrganizationStats = ({ organizations = [], unassignedClients = [] }) => {
       siteAcc + (site.clients?.length || 0), 0) || 0), 0) || 0;
 
   return (
-    <Box className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <Paper className="p-4">
-        <Box className="flex items-center space-x-3">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow">
+        <div className="flex items-center space-x-3">
           <Building2 className="text-blue-600 dark:text-blue-400" size={24} />
-          <Box>
-            <Typography variant="h6" className="text-gray-700 dark:text-gray-300">
+          <div>
+            <h6 className="text-sm font-medium text-gray-700 dark:text-gray-300">
               Total Organizations
-            </Typography>
-            <Typography variant="h4" className="text-blue-600 dark:text-blue-400">
+            </h6>
+            <h4 className="text-2xl font-bold text-blue-600 dark:text-blue-400">
               {organizations?.length || 0}
-            </Typography>
-          </Box>
-        </Box>
-      </Paper>
+            </h4>
+          </div>
+        </div>
+      </div>
 
-      <Paper className="p-4">
-        <Box className="flex items-center space-x-3">
+      <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow">
+        <div className="flex items-center space-x-3">
           <MapPin className="text-green-600 dark:text-green-400" size={24} />
-          <Box>
-            <Typography variant="h6" className="text-gray-700 dark:text-gray-300">
+          <div>
+            <h6 className="text-sm font-medium text-gray-700 dark:text-gray-300">
               Total Sites
-            </Typography>
-            <Typography variant="h4" className="text-green-600 dark:text-green-400">
+            </h6>
+            <h4 className="text-2xl font-bold text-green-600 dark:text-green-400">
               {totalSites}
-            </Typography>
-          </Box>
-        </Box>
-      </Paper>
+            </h4>
+          </div>
+        </div>
+      </div>
 
-      <Paper className="p-4">
-        <Box className="flex items-center space-x-3">
+      <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow">
+        <div className="flex items-center space-x-3">
           <Users className="text-purple-600 dark:text-purple-400" size={24} />
-          <Box>
-            <Typography variant="h6" className="text-gray-700 dark:text-gray-300">
+          <div>
+            <h6 className="text-sm font-medium text-gray-700 dark:text-gray-300">
               Total Assigned Clients
-            </Typography>
-            <Typography variant="h4" className="text-purple-600 dark:text-purple-400">
+            </h6>
+            <h4 className="text-2xl font-bold text-purple-600 dark:text-purple-400">
               {totalClients}
-            </Typography>
-          </Box>
-        </Box>
-      </Paper>
+            </h4>
+          </div>
+        </div>
+      </div>
 
-      <Paper className="p-4">
-        <Box className="flex items-center space-x-3">
+      <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow">
+        <div className="flex items-center space-x-3">
           <UserPlus className="text-orange-600 dark:text-orange-400" size={24} />
-          <Box>
-            <Typography variant="h6" className="text-gray-700 dark:text-gray-300">
+          <div>
+            <h6 className="text-sm font-medium text-gray-700 dark:text-gray-300">
               Unassigned Clients
-            </Typography>
-            <Typography variant="h4" className="text-orange-600 dark:text-orange-400">
+            </h6>
+            <h4 className="text-2xl font-bold text-orange-600 dark:text-orange-400">
               {unassignedClients?.length || 0}
-            </Typography>
-          </Box>
-        </Box>
-      </Paper>
-    </Box>
+            </h4>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
