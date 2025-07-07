@@ -89,7 +89,8 @@ const ScreenshotImg = ({ client }) => {
             className="p-1 rounded-lg bg-blue-100 dark:bg-blue-700 hover:bg-blue-200 dark:hover:bg-blue-600 disabled:opacity-50"
             title="Take New Screenshot"
           >
-            <Camera size={16} className={`text-blue-600 dark:text-blue-300 ${loading ? 'animate-spin' : ''}`} />
+           {/* <Camera size={16} className={`text-blue-600 dark:text-blue-300 ${loading ? 'animate-spin' : ''}`} /> */}
+            <Camera size={16} className={`text-blue-600 dark:text-blue-300 ${loading ? 'text-blue-400' : ''}`} />
           </button>
         </div>
       </div>

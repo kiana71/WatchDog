@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useClients } from '../../context/ClientsContext';
 import ClientListView from './ClientListView';
@@ -168,8 +167,9 @@ const ClientList = () => {
       <div className="mb-6">
         <DashboardHeader onDownloadClick={() => setIsDownloadModalOpen(true)} />
         <DashboardStats clients={filteredClients} />
-        <div className="flex gap-4 items-center">
+        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
           <Search value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
+          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
           <Organization 
             organizations={organizations}
             selectedOrganization={selectedOrganization}
@@ -182,6 +182,7 @@ const ClientList = () => {
             onSiteChange={handleSiteChange}
             disabled={!selectedOrganization}
           />
+          </div>
         </div>
        
       </div>

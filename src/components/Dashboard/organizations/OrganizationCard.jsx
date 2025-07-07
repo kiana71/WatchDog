@@ -25,7 +25,7 @@ const OrganizationCard = ({
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow border">
       <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="flex items-center space-x-3 flex-1">
             <button 
               onClick={() => onToggleOrg(org._id)} 
@@ -79,7 +79,7 @@ const OrganizationCard = ({
             </div>
           </div>
           
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 self-start sm:self-auto">
             <span className="text-sm text-gray-500 dark:text-gray-400">
               {org.sites?.length || 0} sites, {totalClients} clients
             </span>

@@ -15,7 +15,7 @@ const SiteSection = ({
 }) => {
   return (
     <div className="ml-6 border-l-2 border-gray-200 dark:border-gray-700 pl-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div className="flex items-center space-x-3 flex-1">
           <button 
             onClick={onToggle} 
@@ -47,7 +47,7 @@ const SiteSection = ({
           </div>
         </div>
         
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2 self-start sm:self-auto">
           <span className="text-sm text-gray-500 dark:text-gray-400">
             {site.clients?.length || 0} clients
           </span>

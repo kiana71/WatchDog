@@ -29,8 +29,8 @@ const DashboardStats = ({ clients = [] }) => {
   }).length;
 
   return (
-    <div className="flex items-center justify-between">
-      <div className="flex items-center gap-6">
+    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
         <div className="flex items-center">
           <Monitor className="text-blue-500 dark:text-blue-400 mr-2" size={20} />
           <span className="text-gray-600 dark:text-gray-300">
@@ -46,7 +46,7 @@ const DashboardStats = ({ clients = [] }) => {
       </div>
       <button
         onClick={refreshClients}
-        className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+        className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors self-start sm:self-auto"
         title="Refresh Data"
       >
         <RefreshCw className="text-gray-600 dark:text-gray-300" size={20} />
