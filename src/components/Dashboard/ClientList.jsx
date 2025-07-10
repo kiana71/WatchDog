@@ -14,9 +14,7 @@ import { Monitor } from 'lucide-react';
 /**
  * Main dashboard component displaying client list and stats
  */
-
 const ClientList = () => {
-
   const { clients, loading, restartClient, shutdownClient } = useClients();//clients
   const [selectedClientId, setSelectedClientId] = useState(null);//selected client id
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);//download modal open
