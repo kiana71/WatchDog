@@ -6,8 +6,8 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://signcast-watchdog-
 export const passwordApi = {
   /**
    * Request password reset email
-   * @param {string} email - User email
-   * @returns {Promise<Object>} Reset request response
+   * @param {string} email - User email address
+   * @returns {Promise<Object>} Password reset response
    */
   forgotPassword: async (email) => {
     try {
@@ -22,7 +22,7 @@ export const passwordApi = {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to send reset email');
+        throw new Error(data.error || data.message || 'Failed to send reset email');
       }
 
       return data;
@@ -41,24 +41,23 @@ export const passwordApi = {
    */
   changePassword: async (passwordData) => {
     try {
-      const token = authUtils.getToken();
-      if (!token) {
-        throw new Error('No authentication token found');
-      }
+      // Get auth headers from authUtils
+      const { authUtils } = await import('./authUtils');
+      const headers = {
+        'Content-Type': 'application/json',
+        ...authUtils.getAuthHeaders()
+      };
 
       const response = await fetch(`${API_BASE_URL}/auth/change-password`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
+        headers,
         body: JSON.stringify(passwordData),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to change password');
+        throw new Error(data.error || data.message || 'Failed to change password');
       }
 
       return data;
@@ -69,9 +68,9 @@ export const passwordApi = {
   },
 
   /**
-   * Reset password with token (called from email link)
+   * Reset password using token from email
    * @param {string} token - Reset token from email
-   * @returns {Promise<Object>} Reset response
+   * @returns {Promise<Object>} Password reset response
    */
   resetPassword: async (token) => {
     try {
@@ -82,12 +81,12 @@ export const passwordApi = {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to reset password');
+        throw new Error(data.error || data.message || 'Failed to reset password');
       }
 
       return data;
     } catch (error) {
-      console.error('Password reset error:', error);
+      console.error('Reset password error:', error);
       throw error;
     }
   },

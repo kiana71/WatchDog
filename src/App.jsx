@@ -12,6 +12,7 @@ import OrganizationManagement from './components/Dashboard/OrganizationManagemen
 import LoginPage from './components/Auth/LoginPage';
 import SignupPage from './components/Auth/SignupPage';
 import ForgotPasswordPage from './components/Auth/ForgotPasswordPage';
+import VerifyEmailPage from './components/Auth/VerifyEmailPage';
 
 // Create a Material-UI theme
 const theme = createTheme({
@@ -112,13 +113,14 @@ function App() {
     <MuiThemeProvider theme={currentTheme}>
       <ThemeProvider>
         <AuthProvider>
-        <ClientsProvider>
-          <BrowserRouter>
-            <Routes>
+          <ClientsProvider>
+            <BrowserRouter>
+              <Routes>
                 {/* Authentication Routes - Public */}
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                <Route path="/verify" element={<VerifyEmailPage />} />
                 
                 {/* Dashboard Routes - Protected */}
                 <Route
@@ -129,14 +131,14 @@ function App() {
                     </ProtectedRoute>
                   }
                 >
-                <Route index element={<Navigate to="/dashboard" replace />} />
-                <Route path="dashboard" element={<ClientList />} />
-                <Route path="organization" element={<OrganizationManagement />} />
-              </Route>
-              <Route path="*" element={<Navigate to="/dashboard" replace />} />
-            </Routes>
-          </BrowserRouter>
-        </ClientsProvider>
+                  <Route index element={<Navigate to="/dashboard" replace />} />
+                  <Route path="dashboard" element={<ClientList />} />
+                  <Route path="organization" element={<OrganizationManagement />} />
+                </Route>
+                <Route path="*" element={<Navigate to="/dashboard" replace />} />
+              </Routes>
+            </BrowserRouter>
+          </ClientsProvider>
         </AuthProvider>
       </ThemeProvider>
     </MuiThemeProvider>

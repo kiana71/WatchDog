@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {
   Box,
   Card,
@@ -26,7 +26,11 @@ import { emailApi } from '../../services/emailApi';
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login, loading } = useAuth();
+
+  // Get the intended destination (from ProtectedRoute redirect)
+  const from = location.state?.from?.pathname || '/dashboard';
 
   // Form state
   const [formData, setFormData] = useState({
@@ -38,6 +42,20 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [alert, setAlert] = useState({ show: false, message: '', type: 'error' });
+
+  // Check if user came from successful email verification
+  React.useEffect(() => {
+    if (location.state?.verificationSuccess) {
+      setAlert({
+        show: true,
+        message: location.state.message || 'Email verified successfully! You can now log in.',
+        type: 'success'
+      });
+      
+      // Clear the state to prevent showing message again on refresh
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   // Handle form input changes
   const handleChange = (e) => {
@@ -93,9 +111,9 @@ const LoginPage = () => {
           type: 'success'
         });
         
-        // Redirect to dashboard after successful login
+        // Redirect to intended destination or dashboard
         setTimeout(() => {
-          navigate('/dashboard');
+          navigate(from, { replace: true });
         }, 1000);
       } else {
         if (result.needsVerification) {

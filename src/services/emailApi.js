@@ -17,7 +17,7 @@ export const emailApi = {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to verify email');
+        throw new Error(data.error || data.message || 'Failed to verify email');
       }
 
       return data;
@@ -46,7 +46,7 @@ export const emailApi = {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to resend verification email');
+        throw new Error(data.error || data.message || 'Failed to resend verification email');
       }
 
       return data;
@@ -67,48 +67,43 @@ export const emailApi = {
   },
 
   /**
-   * Check if email domain is commonly used (basic check)
+   * Check if email domain is from a common provider
    * @param {string} email - Email to check
-   * @returns {boolean} True if domain appears to be legitimate
+   * @returns {boolean} True if from common domain
    */
   isCommonEmailDomain: (email) => {
-    if (!emailApi.isValidEmail(email)) return false;
-
-    const domain = email.split('@')[1].toLowerCase();
     const commonDomains = [
       'gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 
-      'icloud.com', 'aol.com', 'live.com', 'msn.com',
-      'protonmail.com', 'zoho.com', 'mail.com'
+      'icloud.com', 'aol.com', 'protonmail.com'
     ];
-
-    return commonDomains.includes(domain) || domain.includes('.edu') || domain.includes('.org');
+    const domain = email.split('@')[1]?.toLowerCase();
+    return commonDomains.includes(domain);
   },
 
   /**
-   * Extract verification token from URL (for verification page)
-   * @param {string} url - URL containing the token parameter
-   * @returns {string|null} Token if found, null otherwise
+   * Extract token from URL parameters
+   * @param {string} url - URL to extract token from
+   * @returns {string|null} Extracted token or null
    */
-  extractTokenFromUrl: (url = window.location.href) => {
+  extractTokenFromUrl: (url) => {
     try {
       const urlObj = new URL(url);
       return urlObj.searchParams.get('token');
     } catch (error) {
-      console.error('Error extracting token from URL:', error);
+      console.error('Invalid URL:', error);
       return null;
     }
   },
 
   /**
-   * Check if verification is required based on backend response
-   * @param {Object} errorResponse - Error response from API
-   * @returns {boolean} True if error indicates email verification needed
+   * Check if error indicates verification is required
+   * @param {Error} error - Error object to check
+   * @returns {boolean} True if verification required
    */
-  isVerificationRequired: (errorResponse) => {
-    const message = errorResponse?.message?.toLowerCase() || '';
+  isVerificationRequired: (error) => {
+    const message = error?.message?.toLowerCase() || '';
     return message.includes('verify') || 
-           message.includes('verification') || 
-           message.includes('not verified') ||
-           errorResponse?.code === 'EMAIL_NOT_VERIFIED';
-  },
+           message.includes('verification') ||
+           message.includes('email before logging');
+  }
 }; 

@@ -24,7 +24,7 @@ export const authApi = {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to create account');
+        throw new Error(data.error || data.message || 'Failed to create account');
       }
 
       return data;
@@ -43,6 +43,10 @@ export const authApi = {
    */
   login: async (credentials) => {
     try {
+      console.log('🔐 authApi.login: Starting login request');
+      console.log('📧 authApi.login: Email:', credentials.email);
+      console.log('🌐 authApi.login: API URL:', `${API_BASE_URL}/auth/login`);
+
       const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: {
@@ -51,21 +55,33 @@ export const authApi = {
         body: JSON.stringify(credentials),
       });
 
+      console.log('📥 authApi.login: Response status:', response.status);
+      console.log('📥 authApi.login: Response ok:', response.ok);
+
       const data = await response.json();
+      console.log('📋 authApi.login: Response data:', data);
 
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to login');
+        console.log('❌ authApi.login: Request failed with error:', data.error || data.message);
+        throw new Error(data.error || data.message || 'Failed to login');
       }
+
+      console.log('✅ authApi.login: Login successful');
+      console.log('🔑 authApi.login: Token received:', !!data.token);
+      console.log('👤 authApi.login: User received:', !!data.user);
 
       // Store token and user data using utility function
       if (data.token) {
+        console.log('💾 authApi.login: Storing token and user data');
         authUtils.setToken(data.token);
         authUtils.setUser(data.user);
+        console.log('✅ authApi.login: Data stored successfully');
       }
 
       return data;
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('💥 authApi.login: Error occurred:', error.message);
+      console.error('💥 authApi.login: Full error:', error);
       throw error;
     }
   },
