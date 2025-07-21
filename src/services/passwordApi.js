@@ -1,5 +1,4 @@
 // Password management API service
-import { authUtils } from './authUtils';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://signcast-watchdog-91d66c3ccf16.herokuapp.com/api';
 
@@ -41,7 +40,7 @@ export const passwordApi = {
    */
   changePassword: async (passwordData) => {
     try {
-      // Get auth headers from authUtils
+      // Import authUtils dynamically to avoid circular dependency
       const { authUtils } = await import('./authUtils');
       const headers = {
         'Content-Type': 'application/json',
