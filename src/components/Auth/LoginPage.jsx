@@ -257,9 +257,9 @@ const LoginPage = () => {
                   textDecoration: 'none' 
                 }}
               >
-                <Typography variant="body2" color="primary">
+                {/* <Typography variant="body2" color="primary">
                   Forgot your password?
-                </Typography>
+                </Typography> */}
               </Link>
             </Box>
 
@@ -267,7 +267,7 @@ const LoginPage = () => {
 
             {/* Sign Up Link */}
             <Box sx={{ textAlign: 'center' }}>
-              <Typography variant="body2" color="text.secondary">
+              {/* <Typography variant="body2" color="text.secondary">
                 Don't have an account?{' '}
                 <Link 
                   to="/signup" 
@@ -285,7 +285,7 @@ const LoginPage = () => {
                     Sign up
                   </Typography>
                 </Link>
-              </Typography>
+              </Typography> */}
             </Box>
           </Box>
         </CardContent>
