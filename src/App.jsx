@@ -4,9 +4,14 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider as MuiThemeProvider, createTheme } from '@mui/material';
 import { ThemeProvider } from './context/ThemeContext';
 import { ClientsProvider } from './context/ClientsContext';
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/common/ProtectedRoute';
 import DashboardLayout from './components/Dashboard/DashboardLayout';
 import ClientList from './components/Dashboard/ClientList';
 import OrganizationManagement from './components/Dashboard/OrganizationManagement';
+import LoginPage from './components/Auth/LoginPage';
+import SignupPage from './components/Auth/SignupPage';
+import ForgotPasswordPage from './components/Auth/ForgotPasswordPage';
 
 // Create a Material-UI theme
 const theme = createTheme({
@@ -106,10 +111,24 @@ function App() {
   return (
     <MuiThemeProvider theme={currentTheme}>
       <ThemeProvider>
+        <AuthProvider>
         <ClientsProvider>
           <BrowserRouter>
             <Routes>
-              <Route path="/" element={<DashboardLayout />}>
+                {/* Authentication Routes - Public */}
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/signup" element={<SignupPage />} />
+                <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                
+                {/* Dashboard Routes - Protected */}
+                <Route
+                  path="/"
+                  element={
+                    <ProtectedRoute>
+                      <DashboardLayout />
+                    </ProtectedRoute>
+                  }
+                >
                 <Route index element={<Navigate to="/dashboard" replace />} />
                 <Route path="dashboard" element={<ClientList />} />
                 <Route path="organization" element={<OrganizationManagement />} />
@@ -118,6 +137,7 @@ function App() {
             </Routes>
           </BrowserRouter>
         </ClientsProvider>
+        </AuthProvider>
       </ThemeProvider>
     </MuiThemeProvider>
   );
