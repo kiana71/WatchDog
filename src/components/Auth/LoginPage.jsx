@@ -23,7 +23,7 @@ import {
 // } from '@mui/icons-material';
 import { useAuth } from '../../context/AuthContext';
 import { emailApi } from '../../services/emailApi';
-
+import Logo from '../img/SignCast Master Logo on dark_Medium.png';
 const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -161,10 +161,7 @@ const LoginPage = () => {
         <CardContent sx={{ p: 4 }}>
           {/* Header */}
           <Box sx={{ textAlign: 'center', mb: 4 }}>
-            <Typography variant="h3" sx={{ mb: 2 }}>🐕</Typography>
-            <Typography variant="h4" component="h1" gutterBottom>
-              WatchDog
-            </Typography>
+          <img className='w-36 m-auto' src={Logo}/>
             <Typography variant="body2" color="text.secondary">
               Sign in to your account
             </Typography>

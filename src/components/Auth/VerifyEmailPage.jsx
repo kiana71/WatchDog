@@ -10,6 +10,7 @@ import {
   Button,
 } from '@mui/material';
 import { useAuth } from '../../context/AuthContext';
+import Logo from '../img/SignCast Master Logo on dark_Medium.png';
 
 const VerifyEmailPage = () => {
   const [searchParams] = useSearchParams();
@@ -108,10 +109,7 @@ const VerifyEmailPage = () => {
         <CardContent sx={{ p: 4 }}>
           {/* Header */}
           <Box sx={{ textAlign: 'center', mb: 4 }}>
-            <Typography variant="h3" sx={{ mb: 2 }}>🐕</Typography>
-            <Typography variant="h4" component="h1" gutterBottom>
-              WatchDog
-            </Typography>
+          <img className='w-40 m-auto' src={Logo}/>
             <Typography variant="h6" gutterBottom>
               Email Verification
             </Typography>

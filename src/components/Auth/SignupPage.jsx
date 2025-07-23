@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-
-
 import {
   Box,
   Card,
@@ -29,7 +27,7 @@ import {
 import { useAuth } from '../../context/AuthContext';
 import { emailApi } from '../../services/emailApi';
 import { passwordApi } from '../../services/passwordApi';
-
+import Logo from '../img/SignCast Master Logo on dark_Medium.png'
 const SignupPage = () => {
   const navigate = useNavigate();
   const { signup, loading } = useAuth();
@@ -183,10 +181,7 @@ const SignupPage = () => {
         <CardContent sx={{ p: 4 }}>
           {/* Header */}
           <Box sx={{ textAlign: 'center', mb: 4 }}>
-            <Typography variant="h3" sx={{ mb: 2 }}>🐕</Typography>
-            <Typography variant="h4" component="h1" gutterBottom>
-              Sign Up
-            </Typography>
+           <img className='w-36 m-auto' src={Logo}/>
             <Typography variant="body2" color="text.secondary">
               Create your account
             </Typography>
@@ -227,11 +222,109 @@ const SignupPage = () => {
             />
 
             {/* Email Field */}
-     
+            <TextField
+              fullWidth
+              name="email"
+              label="Email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              error={!!errors.email}
+              helperText={errors.email}
+              margin="normal"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <span>📧</span>
+                  </InputAdornment>
+                ),
+              }}
+              autoComplete="email"
+            />
 
             {/* Password Field */}
-          
+            <TextField
+              fullWidth
+              name="password"
+              label="Password"
+              type={showPassword ? 'text' : 'password'}
+              value={formData.password}
+              onChange={handleChange}
+              error={!!errors.password}
+              helperText={errors.password}
+              margin="normal"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <span>🔒</span>
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setShowPassword(!showPassword)}
+                      edge="end"
+                    >
+                      <span>{showPassword ? '🙈' : '👁️'}</span>
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              autoComplete="new-password"
+            />
 
+            {/* Password Strength Indicator */}
+            {formData.password && (
+              <Box sx={{ mt: 1, mb: 1 }}>
+                <Typography variant="caption" color="text.secondary">
+                  Password Strength:
+                </Typography>
+                <LinearProgress
+                  variant="determinate"
+                  value={(passwordStrength.score / 5) * 100}
+                  color={getPasswordStrengthColor()}
+                  sx={{ mt: 0.5, mb: 1 }}
+                />
+                {passwordStrength.feedback.length > 0 && (
+                  <Typography variant="caption" color={getPasswordStrengthColor()}>
+                    {passwordStrength.feedback[0]}
+                  </Typography>
+                )}
+              </Box>
+            )}
+
+            {/* Confirm Password Field */}
+            <TextField
+              fullWidth
+              name="confirmPassword"
+              label="Confirm Password"
+              type={showConfirmPassword ? 'text' : 'password'}
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              error={!!errors.confirmPassword}
+              helperText={errors.confirmPassword}
+              margin="normal"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <span>🔒</span>
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      edge="end"
+                    >
+                      <span>{showConfirmPassword ? '🙈' : '👁️'}</span>
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              autoComplete="new-password"
+            />
+
+            {/* Signup Button */}
             <Button
               type="submit"
               fullWidth
@@ -243,13 +336,30 @@ const SignupPage = () => {
               {loading ? <CircularProgress size={24} /> : 'Create Account'}
             </Button>
 
-            {/* Confirm Password Field */}
-      
-
-    
+            <Divider sx={{ my: 2 }} />
 
             {/* Sign In Link */}
-           
+            <Box sx={{ textAlign: 'center' }}>
+              <Typography variant="body2" color="text.secondary">
+                Already have an account?{' '}
+                <Link 
+                  to="/login" 
+                  style={{ 
+                    color: 'inherit', 
+                    textDecoration: 'none' 
+                  }}
+                >
+                  <Typography 
+                    component="span" 
+                    variant="body2" 
+                    color="primary"
+                    sx={{ fontWeight: 'medium' }}
+                  >
+                    Sign in
+                  </Typography>
+                </Link>
+              </Typography>
+            </Box>
           </Box>
         </CardContent>
       </Card>
@@ -257,4 +367,4 @@ const SignupPage = () => {
   );
 };
 
-export default SignupPage; 
+export default SignupPage;

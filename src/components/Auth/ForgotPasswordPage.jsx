@@ -23,7 +23,7 @@ import { emailApi } from '../../services/emailApi';
 
 const ForgotPasswordPage = () => {
   const { forgotPassword } = useAuth();
-
+  
   // Form state
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
@@ -65,7 +65,7 @@ const ForgotPasswordPage = () => {
     if (!validateEmail()) {
       return;
     }
-
+    
     try {
       setLoading(true);
       const result = await forgotPassword(email);
