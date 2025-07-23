@@ -43,8 +43,11 @@ const LoginPage = () => {
   const [errors, setErrors] = useState({});
   const [alert, setAlert] = useState({ show: false, message: '', type: 'error' });
 
-  // Check if user came from successful email verification
+  // Check if user came from successful email verification or password reset
   React.useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const resetStatus = urlParams.get('reset');
+    
     if (location.state?.verificationSuccess) {
       setAlert({
         show: true,
@@ -54,8 +57,35 @@ const LoginPage = () => {
       
       // Clear the state to prevent showing message again on refresh
       window.history.replaceState({}, document.title);
+    } else if (location.state?.passwordResetSuccess) {
+      setAlert({
+        show: true,
+        message: location.state.message || 'Password reset successful! You can now log in with your new password.',
+        type: 'success'
+      });
+      
+      // Clear the state to prevent showing message again on refresh
+      window.history.replaceState({}, document.title);
+    } else if (resetStatus === 'success') {
+      setAlert({
+        show: true,
+        message: 'Password reset successful! Please check your email for your new password.',
+        type: 'success'
+      });
+      
+      // Clear the URL parameter
+      window.history.replaceState({}, document.title, location.pathname);
+    } else if (resetStatus === 'error') {
+      setAlert({
+        show: true,
+        message: 'Password reset failed. The reset link may have expired. Please try again.',
+        type: 'error'
+      });
+      
+      // Clear the URL parameter
+      window.history.replaceState({}, document.title, location.pathname);
     }
-  }, [location.state]);
+  }, [location.state, location.search]);
 
   // Handle form input changes
   const handleChange = (e) => {

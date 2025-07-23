@@ -108,7 +108,6 @@ const Header = ({ title = 'Digital Signage Watchdog' }) => {
                   anchorEl={anchorEl}
                   open={open}
                   onClose={handleUserMenuClose}
-                  onClick={handleUserMenuClose}
                   PaperProps={{
                     elevation: 3,
                     sx: {

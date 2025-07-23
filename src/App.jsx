@@ -13,6 +13,7 @@ import LoginPage from './components/Auth/LoginPage';
 import SignupPage from './components/Auth/SignupPage';
 import ForgotPasswordPage from './components/Auth/ForgotPasswordPage';
 import VerifyEmailPage from './components/Auth/VerifyEmailPage';
+import ResetPasswordPage from './components/Auth/ResetPasswordPage';
 
 // Create a Material-UI theme
 const theme = createTheme({
@@ -121,6 +122,7 @@ function App() {
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                 <Route path="/verify" element={<VerifyEmailPage />} />
+                <Route path="/reset-password" element={<ResetPasswordPage />} />
                 
                 {/* Dashboard Routes - Protected */}
                 <Route

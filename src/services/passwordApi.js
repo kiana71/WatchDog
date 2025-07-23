@@ -91,6 +91,35 @@ export const passwordApi = {
   },
 
   /**
+   * Reset password with user-chosen new password
+   * @param {string} token - Reset token from email
+   * @param {string} newPassword - User's chosen new password
+   * @returns {Promise<Object>} Password reset response
+   */
+  resetPasswordWithNew: async (token, newPassword) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/reset-password`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token, newPassword }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || data.message || 'Failed to reset password');
+      }
+
+      return { success: true, data };
+    } catch (error) {
+      console.error('Reset password with new error:', error);
+      return { success: false, error: error.message };
+    }
+  },
+
+  /**
    * Validate password strength
    * @param {string} password - Password to validate
    * @returns {Object} Validation result with score and feedback
