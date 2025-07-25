@@ -92,7 +92,7 @@ const Header = ({ title = 'Digital Signage Watchdog' }) => {
                 >
                   <Avatar
                     sx={{
-                      bgcolor: 'primary.main',
+                      bgcolor: theme === 'light' ? '#2196f3' : '#1976d2',
                       width: 40,
                       height: 40,
                       fontSize: '0.875rem',
@@ -108,6 +108,7 @@ const Header = ({ title = 'Digital Signage Watchdog' }) => {
                   anchorEl={anchorEl}
                   open={open}
                   onClose={handleUserMenuClose}
+                  onClick={handleUserMenuClose}
                   PaperProps={{
                     elevation: 3,
                     sx: {
@@ -115,11 +116,25 @@ const Header = ({ title = 'Digital Signage Watchdog' }) => {
                       filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
                       mt: 1.5,
                       minWidth: 200,
+                      bgcolor: theme === 'light' ? '#ffffff' : '#374151',
+                      color: theme === 'light' ? '#000000' : '#ffffff',
                       '& .MuiAvatar-root': {
                         width: 32,
                         height: 32,
                         ml: -0.5,
                         mr: 1,
+                      },
+                      '& .MuiMenuItem-root': {
+                        color: theme === 'light' ? '#000000' : '#ffffff',
+                        '&:hover': {
+                          bgcolor: theme === 'light' ? '#f5f5f5' : '#4b5563',
+                        },
+                      },
+                      '& .MuiTypography-root': {
+                        color: theme === 'light' ? '#000000' : '#ffffff',
+                      },
+                      '& .MuiTypography-colorTextSecondary': {
+                        color: theme === 'light' ? '#666666' : '#d1d5db',
                       },
                       '&:before': {
                         content: '""',
@@ -129,7 +144,7 @@ const Header = ({ title = 'Digital Signage Watchdog' }) => {
                         right: 14,
                         width: 10,
                         height: 10,
-                        bgcolor: 'background.paper',
+                        bgcolor: theme === 'light' ? '#ffffff' : '#374151',
                         transform: 'translateY(-50%) rotate(45deg)',
                         zIndex: 0,
                       },

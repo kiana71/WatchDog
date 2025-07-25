@@ -114,9 +114,9 @@ function App() {
     <MuiThemeProvider theme={currentTheme}>
       <ThemeProvider>
         <AuthProvider>
-          <ClientsProvider>
-            <BrowserRouter>
-              <Routes>
+        <ClientsProvider>
+          <BrowserRouter>
+            <Routes>
                 {/* Authentication Routes - Public */}
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/signup" element={<SignupPage />} />
@@ -133,14 +133,14 @@ function App() {
                     </ProtectedRoute>
                   }
                 >
-                  <Route index element={<Navigate to="/dashboard" replace />} />
-                  <Route path="dashboard" element={<ClientList />} />
-                  <Route path="organization" element={<OrganizationManagement />} />
-                </Route>
-                <Route path="*" element={<Navigate to="/dashboard" replace />} />
-              </Routes>
-            </BrowserRouter>
-          </ClientsProvider>
+                <Route index element={<Navigate to="/dashboard" replace />} />
+                <Route path="dashboard" element={<ClientList />} />
+                <Route path="organization" element={<OrganizationManagement />} />
+              </Route>
+              <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            </Routes>
+          </BrowserRouter>
+        </ClientsProvider>
         </AuthProvider>
       </ThemeProvider>
     </MuiThemeProvider>

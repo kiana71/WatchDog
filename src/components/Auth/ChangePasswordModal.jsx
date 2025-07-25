@@ -15,10 +15,12 @@ import {
   Box,
 } from '@mui/material';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 import { passwordApi } from '../../services/passwordApi';
 
 const ChangePasswordModal = ({ open, onClose }) => {
   const { changePassword } = useAuth();
+  const { theme } = useTheme();
 
   // Form state
   const [formData, setFormData] = useState({
@@ -173,6 +175,31 @@ const ChangePasswordModal = ({ open, onClose }) => {
       PaperProps={{
         sx: {
           borderRadius: 2,
+          bgcolor: theme === 'light' ? '#ffffff' : '#374151',
+          color: theme === 'light' ? '#000000' : '#ffffff',
+          '& .MuiTypography-root': {
+            color: theme === 'light' ? '#000000' : '#ffffff',
+          },
+          '& .MuiTextField-root': {
+            '& .MuiInputLabel-root': {
+              color: theme === 'light' ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.7)',
+            },
+            '& .MuiOutlinedInput-root': {
+              color: theme === 'light' ? '#000000' : '#ffffff',
+              '& fieldset': {
+                borderColor: theme === 'light' ? 'rgba(0, 0, 0, 0.23)' : 'rgba(255, 255, 255, 0.23)',
+              },
+              '&:hover fieldset': {
+                borderColor: theme === 'light' ? 'rgba(0, 0, 0, 0.87)' : 'rgba(255, 255, 255, 0.87)',
+              },
+            },
+            '& .MuiFormHelperText-root': {
+              color: theme === 'light' ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.7)',
+            },
+          },
+          '& .MuiButton-root': {
+            color: theme === 'light' ? '#000000' : '#ffffff',
+          },
         }
       }}
     >
@@ -313,20 +340,37 @@ const ChangePasswordModal = ({ open, onClose }) => {
           />
 
           {/* Security Tips */}
-          <Box sx={{ mt: 3, p: 2, bgcolor: 'action.hover', borderRadius: 1 }}>
-            <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 'bold' }}>
+          <Box sx={{ 
+            mt: 3, 
+            p: 2, 
+            bgcolor: theme === 'light' ? '#f5f5f5' : '#4b5563', 
+            borderRadius: 1 
+          }}>
+            <Typography variant="subtitle2" sx={{ 
+              mb: 1, 
+              fontWeight: 'bold',
+              color: theme === 'light' ? '#000000' : '#ffffff',
+            }}>
               💡 Password Security Tips:
             </Typography>
-            <Typography variant="caption" component="div">
+            <Typography variant="caption" component="div" sx={{ 
+              color: theme === 'light' ? '#666666' : '#d1d5db' 
+            }}>
               • Use at least 8 characters
             </Typography>
-            <Typography variant="caption" component="div">
+            <Typography variant="caption" component="div" sx={{ 
+              color: theme === 'light' ? '#666666' : '#d1d5db' 
+            }}>
               • Include uppercase and lowercase letters
             </Typography>
-            <Typography variant="caption" component="div">
+            <Typography variant="caption" component="div" sx={{ 
+              color: theme === 'light' ? '#666666' : '#d1d5db' 
+            }}>
               • Add numbers and special characters
             </Typography>
-            <Typography variant="caption" component="div">
+            <Typography variant="caption" component="div" sx={{ 
+              color: theme === 'light' ? '#666666' : '#d1d5db' 
+            }}>
               • Avoid common words or personal information
             </Typography>
           </Box>
