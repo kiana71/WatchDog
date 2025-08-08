@@ -143,7 +143,7 @@ const VerifyEmailPage = () => {
                 ✅ Verification Complete!
               </Typography>
               <Typography variant="body1" paragraph>
-                Your email has been successfully verified. You can now log in to your WatchDog account.
+                Your email has been successfully verified. You can now log in to your WatchDog account and change your password if you want.
               </Typography>
               <Typography variant="body2" color="text.secondary" paragraph>
                 Redirecting to login page in a few seconds...

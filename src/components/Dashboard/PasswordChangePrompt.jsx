@@ -60,7 +60,7 @@ const PasswordChangePrompt = () => {
     <>
       <Collapse in={showPrompt}>
         <Box sx={{ mb: 3 }}>
-          <Alert
+          {/* <Alert
             severity="info"
             action={
               <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
@@ -87,7 +87,7 @@ const PasswordChangePrompt = () => {
             <AlertTitle>🔑 Secure Your Account</AlertTitle>
             You're currently using a temporary password from your verification email. 
             For better security, we recommend changing it to a password of your choice.
-          </Alert>
+          </Alert> */}
         </Box>
       </Collapse>
 
