@@ -63,7 +63,7 @@ const VerifyEmailPage = () => {
           navigate('/login', { 
             state: { 
               verificationSuccess: true,
-              message: 'Email verified successfully! You can now log in.'
+              message: 'Email verified successfully! You can now log in. You can change your password after logging in if you want.'
             }
           });
         }, 3000);
