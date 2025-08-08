@@ -51,7 +51,7 @@ const LoginPage = () => {
     if (location.state?.verificationSuccess) {
       setAlert({
         show: true,
-        message: location.state.message || 'Email verified successfully! You can now log in.',
+        message: location.state.message || 'Email verified successfully! You can now log in. You can change your password if you want.',
         type: 'success'
       });
       
