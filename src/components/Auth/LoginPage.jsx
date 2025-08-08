@@ -297,7 +297,7 @@ const LoginPage = () => {
               <Typography variant="body2" color="text.secondary">
                 Don't have an account?{' '}
                 <Link 
-                  to="/signup" 
+                  to="/signupp" 
                   style={{ 
                     color: 'inherit', 
                     textDecoration: 'none' 
