@@ -72,13 +72,23 @@ const SystemInfo = ({ client }) => {
           </div>
           <div className="text-gray-900 dark:text-white">{client.osName || 'Not available'}</div>
         </div>
-
+   
         <div className="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
             <Tag size={16} className="text-gray-500" />
             <span className="font-medium">Build Number</span>
           </div>
           <div className="text-gray-900 dark:text-white">{client.buildNumber || 'Not available'}</div>
+        </div>
+
+        <div className="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-200 dark:border-gray-700">
+          <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+            <Cpu size={16} className="text-gray-500" />
+            <span className="font-medium">Windows Edition</span>
+          </div>
+          <div className="text-gray-900 dark:text-white">
+            {client.detailedOsInfo?.productName || 'Not available'}
+          </div>
         </div>
 
         <div className="flex flex-col mb-2 py-2 border-b border-gray-200 dark:border-gray-700">
