@@ -38,7 +38,7 @@ const ClientQuickView = ({ client, onClientUpdated }) => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 mb-4">
       <div className="px-4 sm:px-6 -mt-3">
         <div className="mb-2">
           <span className="text-xs font-medium text-gray-500 dark:text-gray-400 block mb-1">Name:</span>
