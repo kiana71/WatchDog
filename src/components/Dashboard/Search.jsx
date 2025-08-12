@@ -3,7 +3,7 @@ import { Search as SearchIcon, X } from 'lucide-react';
 
 const Search = ({value , onChange}) => {
     return (
-        <form className="relative">
+        <form className="relative w-full sm:w-auto">
             <div className="relative" onSubmit={e => e.preventDefault()}>
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <SearchIcon className="h-5 w-5 text-gray-400 dark:text-gray-500" />
