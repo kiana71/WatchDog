@@ -43,6 +43,75 @@ const LoginPage = () => {
   const [errors, setErrors] = useState({});
   const [alert, setAlert] = useState({ show: false, message: '', type: 'error' });
 
+  // Disable highlight/focus border and autofill background for TextFields
+  const noHighlightSx = {
+    '& .MuiOutlinedInput-root': {
+      backgroundColor: 'transparent',
+      '& .MuiOutlinedInput-notchedOutline': {
+        borderColor: 'divider',
+      },
+      '&:hover': {
+        backgroundColor: 'transparent',
+      },
+      '&:hover .MuiOutlinedInput-notchedOutline': {
+        borderColor: 'divider',
+      },
+      '&.Mui-focused': {
+        backgroundColor: 'transparent',
+      },
+      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+        borderColor: 'divider',
+      },
+    },
+    // Make input text and caret white, keep bg transparent
+    '& .MuiInputBase-input': {
+      color: '#fff',
+      caretColor: '#fff',
+      backgroundColor: 'transparent',
+    },
+    // Also force native input background transparent
+    '& input': {
+      backgroundColor: 'transparent !important',
+    },
+    // Placeholder color (cross-browser best-effort)
+    '& .MuiInputBase-input::placeholder': {
+      color: 'rgba(255,255,255,0.6)',
+      opacity: 1,
+    },
+    '& .MuiInputBase-input::-webkit-input-placeholder': {
+      color: 'rgba(255,255,255,0.6)',
+      opacity: 1,
+    },
+    '& .MuiInputLabel-root': {
+      color: 'text.secondary',
+    },
+    '& .MuiInputLabel-root.Mui-focused': {
+      color: 'text.secondary',
+    },
+    // Autofill handling
+    '& input:-webkit-autofill': {
+      WebkitBoxShadow: '0 0 0 1000px transparent inset',
+      boxShadow: '0 0 0 1000px transparent inset',
+      WebkitTextFillColor: '#fff',
+      transition: 'background-color 5000s ease-in-out 0s',
+      backgroundColor: 'transparent !important',
+    },
+    '& input:-webkit-autofill:hover': {
+      WebkitBoxShadow: '0 0 0 1000px transparent inset',
+      boxShadow: '0 0 0 1000px transparent inset',
+      WebkitTextFillColor: '#fff',
+      transition: 'background-color 5000s ease-in-out 0s',
+      backgroundColor: 'transparent !important',
+    },
+    '& input:-webkit-autofill:focus': {
+      WebkitBoxShadow: '0 0 0 1000px transparent inset',
+      boxShadow: '0 0 0 1000px transparent inset',
+      WebkitTextFillColor: '#fff',
+      transition: 'background-color 5000s ease-in-out 0s',
+      backgroundColor: 'transparent !important',
+    },
+  };
+
   // Check if user came from successful email verification or password reset
   React.useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
@@ -51,7 +120,7 @@ const LoginPage = () => {
     if (location.state?.verificationSuccess) {
       setAlert({
         show: true,
-        message: location.state.message || 'Email verified successfully! You can now log in. You can change your password if you want.',
+        message: location.state.message || 'Email verified successfully! You can change your password if you want.',
         type: 'success'
       });
       
@@ -191,7 +260,7 @@ const LoginPage = () => {
         <CardContent sx={{ p: 4 }}>
           {/* Header */}
           <Box sx={{ textAlign: 'center', mb: 4 }}>
-          <img className='w-36 m-auto' src={Logo}/>
+            <img className='w-36 m-auto' src={Logo}/>
             <Typography variant="body2" color="text.secondary">
               Sign in to your account
             </Typography>
@@ -221,6 +290,7 @@ const LoginPage = () => {
               error={!!errors.email}
               helperText={errors.email}
               margin="normal"
+              sx={noHighlightSx}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -243,6 +313,7 @@ const LoginPage = () => {
               error={!!errors.password}
               helperText={errors.password}
               margin="normal"
+              sx={noHighlightSx}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">

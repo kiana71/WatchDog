@@ -31,6 +31,75 @@ const ForgotPasswordPage = () => {
   const [alert, setAlert] = useState({ show: false, message: '', type: 'error' });
   const [emailSent, setEmailSent] = useState(false);
 
+  // Disable highlight/focus border and make text white (including autofill), keep bg transparent
+  const noHighlightSx = {
+    '& .MuiOutlinedInput-root': {
+      backgroundColor: 'transparent',
+      '& .MuiOutlinedInput-notchedOutline': {
+        borderColor: 'divider',
+      },
+      '&:hover': {
+        backgroundColor: 'transparent',
+      },
+      '&:hover .MuiOutlinedInput-notchedOutline': {
+        borderColor: 'divider',
+      },
+      '&.Mui-focused': {
+        backgroundColor: 'transparent',
+      },
+      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+        borderColor: 'divider',
+      },
+    },
+    // Make input text and caret white
+    '& .MuiInputBase-input': {
+      color: '#fff',
+      caretColor: '#fff',
+      backgroundColor: 'transparent',
+    },
+    // Also force native input background transparent
+    '& input': {
+      backgroundColor: 'transparent !important',
+    },
+    // Placeholder color
+    '& .MuiInputBase-input::placeholder': {
+      color: 'rgba(255,255,255,0.6)',
+      opacity: 1,
+    },
+    '& .MuiInputBase-input::-webkit-input-placeholder': {
+      color: 'rgba(255,255,255,0.6)',
+      opacity: 1,
+    },
+    '& .MuiInputLabel-root': {
+      color: 'text.secondary',
+    },
+    '& .MuiInputLabel-root.Mui-focused': {
+      color: 'text.secondary',
+    },
+    // Autofill handling
+    '& input:-webkit-autofill': {
+      WebkitBoxShadow: '0 0 0 1000px transparent inset',
+      boxShadow: '0 0 0 1000px transparent inset',
+      WebkitTextFillColor: '#fff',
+      transition: 'background-color 5000s ease-in-out 0s',
+      backgroundColor: 'transparent !important',
+    },
+    '& input:-webkit-autofill:hover': {
+      WebkitBoxShadow: '0 0 0 1000px transparent inset',
+      boxShadow: '0 0 0 1000px transparent inset',
+      WebkitTextFillColor: '#fff',
+      transition: 'background-color 5000s ease-in-out 0s',
+      backgroundColor: 'transparent !important',
+    },
+    '& input:-webkit-autofill:focus': {
+      WebkitBoxShadow: '0 0 0 1000px transparent inset',
+      boxShadow: '0 0 0 1000px transparent inset',
+      WebkitTextFillColor: '#fff',
+      transition: 'background-color 5000s ease-in-out 0s',
+      backgroundColor: 'transparent !important',
+    },
+  };
+
   // Handle email input change
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -157,6 +226,7 @@ const ForgotPasswordPage = () => {
                 error={!!errors.email}
                 helperText={errors.email}
                 margin="normal"
+                sx={noHighlightSx}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">

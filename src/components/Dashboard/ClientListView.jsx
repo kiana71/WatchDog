@@ -38,11 +38,19 @@ const ClientListView = ({
             </th>
             <th
               scope="col"
-              className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer select-none"
+              className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider hidden md:table-cell cursor-pointer select-none"
               onClick={() => onSort && onSort('name')}
             >
               Name
               {sortColumn === 'name' && (sortDirection === 'asc' ? ' ▲' : ' ▼')}
+            </th>
+            <th
+              scope="col"
+              className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider  md:table-cell cursor-pointer select-none"
+              onClick={() => onSort && onSort('clientName')}
+            >
+              Client Name
+              {sortColumn === 'clientName' && (sortDirection === 'asc' ? ' ▲' : ' ▼')}
             </th>
             <th
               scope="col"

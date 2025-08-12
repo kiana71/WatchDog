@@ -36,6 +36,71 @@ const ResetPasswordPage = () => {
   const [alert, setAlert] = useState({ show: false, message: '', type: 'error' });
   const [passwordStrength, setPasswordStrength] = useState({ score: 0, feedback: [] });
 
+  // Disable highlight/focus border, keep bg transparent, and make input text white
+  const noHighlightSx = {
+    '& .MuiOutlinedInput-root': {
+      backgroundColor: 'transparent',
+      '& .MuiOutlinedInput-notchedOutline': {
+        borderColor: 'divider',
+      },
+      '&:hover': {
+        backgroundColor: 'transparent',
+      },
+      '&:hover .MuiOutlinedInput-notchedOutline': {
+        borderColor: 'divider',
+      },
+      '&.Mui-focused': {
+        backgroundColor: 'transparent',
+      },
+      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+        borderColor: 'divider',
+      },
+    },
+    '& .MuiInputBase-input': {
+      color: '#fff',
+      caretColor: '#fff',
+      backgroundColor: 'transparent',
+    },
+    '& input': {
+      backgroundColor: 'transparent !important',
+    },
+    '& .MuiInputBase-input::placeholder': {
+      color: 'rgba(255,255,255,0.6)',
+      opacity: 1,
+    },
+    '& .MuiInputBase-input::-webkit-input-placeholder': {
+      color: 'rgba(255,255,255,0.6)',
+      opacity: 1,
+    },
+    '& .MuiInputLabel-root': {
+      color: 'text.secondary',
+    },
+    '& .MuiInputLabel-root.Mui-focused': {
+      color: 'text.secondary',
+    },
+    '& input:-webkit-autofill': {
+      WebkitBoxShadow: '0 0 0 1000px transparent inset',
+      boxShadow: '0 0 0 1000px transparent inset',
+      WebkitTextFillColor: '#fff',
+      transition: 'background-color 5000s ease-in-out 0s',
+      backgroundColor: 'transparent !important',
+    },
+    '& input:-webkit-autofill:hover': {
+      WebkitBoxShadow: '0 0 0 1000px transparent inset',
+      boxShadow: '0 0 0 1000px transparent inset',
+      WebkitTextFillColor: '#fff',
+      transition: 'background-color 5000s ease-in-out 0s',
+      backgroundColor: 'transparent !important',
+    },
+    '& input:-webkit-autofill:focus': {
+      WebkitBoxShadow: '0 0 0 1000px transparent inset',
+      boxShadow: '0 0 0 1000px transparent inset',
+      WebkitTextFillColor: '#fff',
+      transition: 'background-color 5000s ease-in-out 0s',
+      backgroundColor: 'transparent !important',
+    },
+  };
+
   // Check if token is present
   useEffect(() => {
     if (!token) {
@@ -218,6 +283,7 @@ const ResetPasswordPage = () => {
               error={!!errors.newPassword}
               helperText={errors.newPassword}
               margin="normal"
+              sx={noHighlightSx}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -234,6 +300,16 @@ const ResetPasswordPage = () => {
                     </IconButton>
                   </InputAdornment>
                 ),
+              }}
+              inputProps={{
+                style: {
+                  backgroundColor: 'transparent',
+                  WebkitBoxShadow: '0 0 0 1000px transparent inset',
+                  boxShadow: '0 0 0 1000px transparent inset',
+                  WebkitTextFillColor: '#fff',
+                  color: '#fff',
+                  caretColor: '#fff',
+                },
               }}
               autoComplete="new-password"
               disabled={loading || !token}
@@ -271,6 +347,7 @@ const ResetPasswordPage = () => {
               error={!!errors.confirmPassword}
               helperText={errors.confirmPassword}
               margin="normal"
+              sx={noHighlightSx}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -287,6 +364,16 @@ const ResetPasswordPage = () => {
                     </IconButton>
                   </InputAdornment>
                 ),
+              }}
+              inputProps={{
+                style: {
+                  backgroundColor: 'transparent',
+                  WebkitBoxShadow: '0 0 0 1000px transparent inset',
+                  boxShadow: '0 0 0 1000px transparent inset',
+                  WebkitTextFillColor: '#fff',
+                  color: '#fff',
+                  caretColor: '#fff',
+                },
               }}
               autoComplete="new-password"
               disabled={loading || !token}

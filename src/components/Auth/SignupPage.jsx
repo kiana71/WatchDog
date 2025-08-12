@@ -39,6 +39,75 @@ const SignupPage = () => {
   const [errors, setErrors] = useState({});
   const [alert, setAlert] = useState({ show: false, message: '', type: 'error' });
 
+  // Disable highlight/focus border and make text white (including autofill), keep bg transparent
+  const noHighlightSx = {
+    '& .MuiOutlinedInput-root': {
+      backgroundColor: 'transparent',
+      '& .MuiOutlinedInput-notchedOutline': {
+        borderColor: 'divider',
+      },
+      '&:hover': {
+        backgroundColor: 'transparent',
+      },
+      '&:hover .MuiOutlinedInput-notchedOutline': {
+        borderColor: 'divider',
+      },
+      '&.Mui-focused': {
+        backgroundColor: 'transparent',
+      },
+      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+        borderColor: 'divider',
+      },
+    },
+    // Make input text and caret white, keep bg transparent
+    '& .MuiInputBase-input': {
+      color: '#fff',
+      caretColor: '#fff',
+      backgroundColor: 'transparent',
+    },
+    // Also force native input background transparent
+    '& input': {
+      backgroundColor: 'transparent !important',
+    },
+    // Placeholder color
+    '& .MuiInputBase-input::placeholder': {
+      color: 'rgba(255,255,255,0.6)',
+      opacity: 1,
+    },
+    '& .MuiInputBase-input::-webkit-input-placeholder': {
+      color: 'rgba(255,255,255,0.6)',
+      opacity: 1,
+    },
+    '& .MuiInputLabel-root': {
+      color: 'text.secondary',
+    },
+    '& .MuiInputLabel-root.Mui-focused': {
+      color: 'text.secondary',
+    },
+    // Autofill handling
+    '& input:-webkit-autofill': {
+      WebkitBoxShadow: '0 0 0 1000px transparent inset',
+      boxShadow: '0 0 0 1000px transparent inset',
+      WebkitTextFillColor: '#fff',
+      transition: 'background-color 5000s ease-in-out 0s',
+      backgroundColor: 'transparent !important',
+    },
+    '& input:-webkit-autofill:hover': {
+      WebkitBoxShadow: '0 0 0 1000px transparent inset',
+      boxShadow: '0 0 0 1000px transparent inset',
+      WebkitTextFillColor: '#fff',
+      transition: 'background-color 5000s ease-in-out 0s',
+      backgroundColor: 'transparent !important',
+    },
+    '& input:-webkit-autofill:focus': {
+      WebkitBoxShadow: '0 0 0 1000px transparent inset',
+      boxShadow: '0 0 0 1000px transparent inset',
+      WebkitTextFillColor: '#fff',
+      transition: 'background-color 5000s ease-in-out 0s',
+      backgroundColor: 'transparent !important',
+    },
+  };
+
   // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -163,17 +232,19 @@ const SignupPage = () => {
           )}
 
           {/* Signup Form */}
-          <Box component="form" onSubmit={handleSubmit}>
+          <Box component="form" onSubmit={handleSubmit} autoComplete="off">
             {/* Username Field */}
             <TextField
               fullWidth
               name="username"
+              id="signup-username"
               label="Username"
               value={formData.username}
               onChange={handleChange}
               error={!!errors.username}
               helperText={errors.username}
               margin="normal"
+              sx={noHighlightSx}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -181,7 +252,18 @@ const SignupPage = () => {
                   </InputAdornment>
                 ),
               }}
-              autoComplete="username"
+              autoComplete="off"
+              inputProps={{ 
+                autoComplete: 'off', 
+                style: { 
+                  backgroundColor: 'transparent', 
+                  WebkitBoxShadow: '0 0 0 1000px transparent inset', 
+                  boxShadow: '0 0 0 1000px transparent inset', 
+                  WebkitTextFillColor: '#fff',
+                  color: '#fff',
+                  caretColor: '#fff'
+                } 
+              }}
               autoFocus
             />
 
@@ -196,6 +278,7 @@ const SignupPage = () => {
               error={!!errors.email}
               helperText={errors.email}
               margin="normal"
+              sx={noHighlightSx}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">

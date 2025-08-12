@@ -126,6 +126,7 @@ const ClientList = () => {
     return (
       (client.name && client.name.toLowerCase().includes(query)) ||
       (client.computerName && client.computerName.toLowerCase().includes(query)) ||
+      (client.clientName && client.clientName.toLowerCase().includes(query)) ||
       (client.ipAddress && client.ipAddress.toLowerCase().includes(query)) ||
       (client.osName && client.osName.toLowerCase().includes(query))
     );
