@@ -87,7 +87,14 @@ const SystemInfo = ({ client }) => {
             <span className="font-medium">Windows Edition</span>
           </div>
           <div className="text-gray-900 dark:text-white">
-            {client.detailedOsInfo?.productName || 'Not available'}
+            {(() => {
+              const productName = client.detailedOsInfo?.productName;
+              if (!productName) return 'Not available';
+              
+              // Extract just the edition (Pro, Home, etc.) from product name
+              const match = productName.match(/Windows\s+\d+\s+(.+)/) || productName.match(/Windows\s+(.+)/);
+              return match && match[1] ? match[1].trim() : productName;
+            })()}
           </div>
         </div>
 
