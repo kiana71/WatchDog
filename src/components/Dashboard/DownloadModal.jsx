@@ -8,7 +8,7 @@ const DownloadModal = ({ isOpen, onClose }) => {
 
   const handleDownload = async () => {
     setError(null);
-    const baseUrl = import.meta.env.VITE_RELEASE_URL;
+    const baseUrl = 'https://github.com/kiana71/watchdog-electron/releases';
     
     if (!baseUrl) {
       setError('Release URL not configured. Please contact your administrator.');
@@ -125,13 +125,14 @@ const DownloadModal = ({ isOpen, onClose }) => {
                       <h3 className="text-xl font-medium">Windows Installation</h3>
                     </div>
                     <div className="flex flex-col md:flex-row gap-6">
-                      <button
-                        onClick={handleDownload}
+                      <a
+                        href="https://github.com/kiana71/watchdog-electron/releases"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="inline-flex items-center h-12 gap-2 px-4 py-0 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
                       >
-                        <Download size={12} />
                         Download for Windows
-                      </button>
+                      </a>
                       <div className="text-gray-700 dark:text-gray-300">
                         <p className="font-medium mb-2">Installation steps:</p>
                         <ol className="list-decimal list-inside space-y-1 text-sm">
